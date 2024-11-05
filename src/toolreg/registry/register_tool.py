@@ -1,34 +1,81 @@
-"""Tool registration decorator."""
-
 from __future__ import annotations
 
-from collections.abc import Callable
 import functools
-from typing import Any, Literal
+from typing import TYPE_CHECKING, Any, ClassVar
+
+from toolreg.registry import example, registry, tool
 
 
-ItemType = Literal["filter", "test", "function"]
-FilterFunc = Callable[..., Any]
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+
+class ToolRegistrar:
+    """Manages tool registration with deferred processing."""
+
+    _instance: ClassVar[ToolRegistrar | None] = None
+    _pending_registrations: list[tuple[Callable[..., Any], dict[str, Any]]]
+
+    def __new__(cls) -> ToolRegistrar:  # noqa: PYI034
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __init__(self) -> None:
+        if not hasattr(self, "_pending_registrations"):
+            self._pending_registrations = []
+
+    def add_pending(
+        self,
+        func: Callable[..., Any],
+        metadata_kwargs: dict[str, Any],
+    ) -> None:
+        """Queue a function for later registration."""
+        self._pending_registrations.append((func, metadata_kwargs))
+
+    def process_pending(self) -> None:
+        """Process all pending registrations.
+
+        This method creates the metadata and registers all pending tools with the
+        ToolRegistry.
+        """
+        reg = registry.ToolRegistry()
+
+        for func, metadata_kwargs in self._pending_registrations:
+            try:
+                metadata = tool.Tool.from_function(func=func, **metadata_kwargs)
+                reg.register(func, metadata)
+            except Exception as e:
+                # Log error but continue processing other registrations
+                msg = f"Failed to register {func.__name__}: {e}"
+                raise RuntimeError(msg) from e
+
+        # Clear processed registrations
+        self._pending_registrations.clear()
 
 
 def register_tool(
-    typ: ItemType,
+    typ: registry.ItemType,
     *,
     name: str | None = None,
     group: str = "general",
-    examples: example.ExampleList | None = None,
+    examples: list[example.Example] | None = None,
     required_packages: list[str] | None = None,
     aliases: list[str] | None = None,
     icon: str | None = None,
     description: str | None = None,
-) -> Callable[[FilterFunc], FilterFunc]:
-    """Decorator to register a jinja item.
+) -> Callable[[registry.FilterFunc], registry.FilterFunc]:
+    """Decorator to queue a tool for registration.
+
+    Instead of immediately processing and registering the tool, this decorator
+    queues the function for later registration. The actual registration happens
+    when ToolRegistrar.process_pending() is called.
 
     Args:
         typ: Type of item (filter, test, function)
         name: Optional name override
         group: Group/category for the item
-        examples: Dictionary of examples
+        examples: List of usage examples
         required_packages: Required package names
         aliases: Alternative names for the item
         icon: Icon identifier
@@ -41,9 +88,8 @@ def register_tool(
             group="text",
             examples=[
                 Example(
-                    content="{{ 'hello' | uppercase }}",
+                    template="{{ 'hello' | uppercase }}",
                     title="Basic Example",
-                    description="Simple uppercase example"
                 )
             ],
             icon="mdi:format-letter-case-upper"
@@ -51,29 +97,30 @@ def register_tool(
         def uppercase(value: str) -> str:
             '''Convert string to uppercase.'''
             return value.upper()
+
+        # Later, when ready to process:
+        ToolRegistrar().process_pending()
         ```
 
     Returns:
         Decorated function
     """
 
-    def decorator(func: FilterFunc) -> FilterFunc:
-        from toolreg.registry import registry, tool
+    def decorator(func: registry.FilterFunc) -> registry.FilterFunc:
+        # Store metadata args for later processing
+        metadata_kwargs = {
+            "typ": typ,
+            "name": name,
+            "group": group,
+            "examples": examples,
+            "required_packages": required_packages,
+            "aliases": aliases,
+            "icon": icon,
+            "description": description,
+        }
 
-        reg_instance = registry.ToolRegistry()
-
-        metadata = tool.Tool.from_function(
-            func=func,
-            typ=typ,
-            name=name,
-            group=group,
-            examples=examples,
-            required_packages=required_packages,
-            aliases=aliases,
-            icon=icon,
-            description=description,
-        )
-        reg_instance.register(func, metadata)
+        registrar = ToolRegistrar()
+        registrar.add_pending(func, metadata_kwargs)
 
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -87,8 +134,6 @@ def register_tool(
 if __name__ == "__main__":
     import jinja2
 
-    from toolreg.registry import example
-
     @register_tool(
         typ="filter",
         group="text",
@@ -97,7 +142,6 @@ if __name__ == "__main__":
                 template="{{ 'hello' | upper }}",
                 title="Basic Example",
                 description="Basic uppercase example",
-                markdown=False,
             )
         ],
         icon="mdi:format-letter-case-upper",
@@ -126,6 +170,9 @@ if __name__ == "__main__":
         def static_method(value: str) -> str:
             """Test static method."""
             return value
+
+    # Process all pending registrations
+    ToolRegistrar().process_pending()
 
     # Environment integration
     class Environment(jinja2.Environment):

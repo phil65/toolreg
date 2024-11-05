@@ -7,12 +7,16 @@ import functools
 import inspect
 import logging
 import types
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from upath import UPath
 
 from toolreg.registry.example import Example
 from toolreg.registry.register_tool import register_tool
+
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterator
 
 
 logger = logging.getLogger(__name__)
@@ -246,7 +250,7 @@ def get_argspec(obj: Any, remove_self: bool = True) -> inspect.FullArgSpec:
             argspec = inspect.getfullargspec(obj.__init__)
         if remove_self:
             del argspec.args[0]
-    elif isinstance(obj, (types.BuiltinFunctionType, types.BuiltinMethodType)):
+    elif isinstance(obj, types.BuiltinFunctionType | types.BuiltinMethodType):
         argspec = inspect.getfullargspec(obj)
         if remove_self:
             del argspec.args[0]
@@ -317,7 +321,7 @@ def get_source_lines(obj: HasCodeType) -> tuple[list[str], int]:
     examples=[],
 )
 @functools.cache
-def get_signature(obj: HasCodeType) -> inspect.Signature:
+def get_signature(obj: Any) -> inspect.Signature:
     """Get signature for given callable.
 
     Args:
@@ -344,7 +348,7 @@ def get_members(obj: object, predicate: Callable[[Any], bool] | None = None):
 
 
 @functools.cache
-def get_file(obj: HasCodeType) -> pathlib.Path | None:
+def get_file(obj: HasCodeType) -> UPath | None:
     """Cached wrapper for inspect.getfile.
 
     Args:
@@ -355,7 +359,7 @@ def get_file(obj: HasCodeType) -> pathlib.Path | None:
     return None
 
 
-def get_qualified_name(func: HasCodeType) -> str:
+def get_qualified_name(func: Any) -> str:
     """Get the fully qualified name of a function or method.
 
     Args:
