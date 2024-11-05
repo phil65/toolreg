@@ -6,6 +6,7 @@ import inspect
 from typing import TYPE_CHECKING, Any
 
 from upath import UPath
+import yaml
 
 from toolreg.dissect import detect_docstring_style
 
@@ -14,9 +15,40 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
 type ExampleDict = dict[str, dict[str, str]]
+type FuncInfo = dict[str, str | ExampleDict]
 
 
-def inspect_function(func: Callable[..., Any]) -> dict[str, Any]:
+def get_qualified_name(func: Callable[..., Any]) -> str:
+    """Get the fully qualified name of a function or method.
+
+    Args:
+        func: The function or method to inspect
+
+    Returns:
+        Fully qualified name as string
+
+    Raises:
+        ValueError: If function path cannot be determined
+    """
+    match func:
+        case _ if inspect.ismethod(func):
+            if hasattr(func, "__self__"):
+                if inspect.isclass(func.__self__):  # classmethod
+                    return f"{func.__self__.__module__}.{func.__qualname__}"
+                # instance method
+                return f"{func.__self__.__class__.__module__}.{func.__qualname__}"
+            # static method
+            return f"{func.__module__}.{func.__qualname__}"
+        case _ if inspect.isfunction(func):
+            return f"{func.__module__}.{func.__qualname__}"
+        case _ if hasattr(func, "__module__") and hasattr(func, "__qualname__"):
+            return f"{func.__module__}.{func.__qualname__}"
+        case _:
+            msg = f"Could not determine import path for {func}"
+            raise ValueError(msg)
+
+
+def inspect_function(func: Callable[..., Any]) -> FuncInfo:
     """Extract function documentation and examples from docstring.
 
     Args:
@@ -42,10 +74,12 @@ def inspect_function(func: Callable[..., Any]) -> dict[str, Any]:
         msg = "Argument must be a callable"
         raise TypeError(msg)
 
-    # Get function module and name
-    module_name = func.__module__
-    func_name = func.__name__
-    full_path = f"{module_name}.{func_name}"
+    # Get function's qualified name
+    try:
+        full_path = get_qualified_name(func)
+    except ValueError as e:
+        msg = "Failed to determine function path"
+        raise ValueError(msg) from e
 
     # Get docstring safely
     docstring = inspect.getdoc(func) or ""
@@ -55,7 +89,7 @@ def inspect_function(func: Callable[..., Any]) -> dict[str, Any]:
     doc = detect_docstring_style.parse_docstring(docstring, style=style.value)
 
     # Initialize result dictionary
-    result: dict[str, str | ExampleDict] = {
+    result: FuncInfo = {
         "fn": full_path,
         "description": "",
     }
@@ -68,7 +102,6 @@ def inspect_function(func: Callable[..., Any]) -> dict[str, Any]:
 
     # Extract examples from parsed sections
     examples: ExampleDict = {}
-    # print(list(doc))
     for section in doc:
         if section.kind == "examples":
             for i, example in enumerate(section.value):
@@ -83,8 +116,8 @@ def inspect_function(func: Callable[..., Any]) -> dict[str, Any]:
 
 
 def generate_function_docs(
-    functions: list[Any], output_path: str | UPath | None = None
-) -> dict[str, Any]:
+    functions: list[Callable[..., Any]], output_path: str | UPath | None = None
+) -> dict[str, FuncInfo]:
     """Generate documentation dictionary for multiple functions.
 
     Args:
@@ -105,19 +138,16 @@ def generate_function_docs(
         >>> len(docs)
         2
     """
-    result = {}
-
-    for func in functions:
-        if not func.__name__.startswith("_"):  # Skip private functions
-            result[func.__name__] = inspect_function(func)
+    result = {
+        func.__name__: inspect_function(func)
+        for func in functions
+        if not func.__name__.startswith("_")
+    }
 
     if output_path:
         path = UPath(output_path)
-        # Determine format based on extension
         match path.suffix.lower():
             case ".yaml" | ".yml":
-                import yaml
-
                 path.write_text(yaml.dump(result, sort_keys=False))
             case ".json":
                 import json

@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence
-from dataclasses import dataclass, field
 import functools
 import inspect
-from typing import Any, Literal, Self
+from typing import TYPE_CHECKING, Any, Literal, Self
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ImportString
+
+
+if TYPE_CHECKING:
+    from toolreg.utils import slugfield
 
 
 type FilterFunc = Callable[..., Any]
@@ -22,19 +25,27 @@ class Example(BaseModel):
     markdown: bool = Field(default=False, description="Whether content is markdown")
 
 
-@dataclass
-class ToolMetadata:
+class ToolMetadata(BaseModel):
     """Metadata for a jinja item."""
 
-    name: str
+    name: slugfield.Slug
+    """ame of the jinja item"""
     typ: ItemType
-    import_path: str
+    """ype of the item (filter, test, or function)"""
+    import_path: ImportString[str]
+    """mport path in the format "package.module.function"""
     description: str | None = None
+    """ptional description of what the item does"""
     group: str = "general"
-    examples: list[Example] = field(default_factory=list)
-    required_packages: list[str] = field(default_factory=list)
-    aliases: list[str] = field(default_factory=list)
+    """roup/category for organizing items"""
+    examples: list[Example] = Field(default_factory=list)
+    """ist of usage examples"""
+    required_packages: list[str] = Field(default_factory=list)
+    """ython packages required for this item"""
+    aliases: list[str] = Field(default_factory=list)
+    """lternative names that can be used to access this item"""
     icon: str | None = None
+    """ptional icon identifier"""
 
     @classmethod
     def from_function(cls, func: FilterFunc, typ: ItemType, **kwargs: Any) -> Self:
