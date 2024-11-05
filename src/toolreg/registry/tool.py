@@ -9,7 +9,7 @@ from toolreg.registry.registry import FilterFunc, ItemType
 from toolreg.utils import resolve, slugfield
 
 
-class ToolMetadata(BaseModel):
+class Tool(BaseModel):
     """Metadata for a jinja item."""
 
     name: slugfield.Slug
@@ -61,7 +61,7 @@ class ToolMetadata(BaseModel):
             description: Optional override for function description
 
         Returns:
-            New ToolMetadata instance configured with the provided data
+            New Tool instance configured with the provided data
 
         Example:
             ```python
@@ -72,7 +72,7 @@ class ToolMetadata(BaseModel):
                 '''
                 return value.upper()
 
-            metadata = ToolMetadata.from_function(
+            metadata = Tool.from_function(
                 my_filter,
                 typ="filter",
                 group="text",

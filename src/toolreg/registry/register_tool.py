@@ -62,7 +62,7 @@ def register_tool(
     def decorator(func: FilterFunc) -> FilterFunc:
         reg_instance = registry.ToolRegistry()
 
-        metadata = tool.ToolMetadata.from_function(
+        metadata = tool.Tool.from_function(
             func=func,
             typ=typ,
             name=name,

@@ -27,9 +27,9 @@ class ToolRegistry:
 
     def __init__(self):
         if not hasattr(self, "_items"):
-            self._items: dict[str, tuple[FilterFunc, tool.ToolMetadata]] = {}
+            self._items: dict[str, tuple[FilterFunc, tool.Tool]] = {}
 
-    def register(self, func: FilterFunc, metadata: tool.ToolMetadata) -> None:
+    def register(self, func: FilterFunc, metadata: tool.Tool) -> None:
         """Register a new item with metadata."""
         self._items[metadata.name] = (func, metadata)
         # Also register aliases
@@ -39,7 +39,7 @@ class ToolRegistry:
     def get_all(
         self,
         typ: ItemType | None = None,
-    ) -> dict[str, tuple[FilterFunc, tool.ToolMetadata]]:
+    ) -> dict[str, tuple[FilterFunc, tool.Tool]]:
         """Get all registered items, optionally filtered by type."""
         if typ is None:
             return self._items
