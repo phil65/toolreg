@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any
 from jinja2 import filters
 import upath
 
-from toolreg.tools import iconfilters, text
+from toolreg.tools import icon, text
 
 
 if TYPE_CHECKING:
@@ -264,8 +264,8 @@ class DirectoryTree:
         if self.options.hide_empty and self._is_directory_empty_after_filters(
             self.root_path
         ):
-            icon = self.DIRECTORY if self.options.show_icons else ""
-            yield f"{icon} {self.root_path.name} (empty)"
+            icon_str = self.DIRECTORY if self.options.show_icons else ""
+            yield f"{icon_str} {self.root_path.name} (empty)"
             return
 
         root_icon = self.DIRECTORY if self.options.show_icons else ""
@@ -275,12 +275,10 @@ class DirectoryTree:
             info = _get_path_info(path)
 
             # Prepare icon
-            icon = ""
+            icon_str = ""
             if self.options.show_icons:
-                icon = (
-                    self.DIRECTORY
-                    if info["is_dir"]
-                    else iconfilters.get_path_ascii_icon(path)
+                icon_str = (
+                    self.DIRECTORY if info["is_dir"] else icon.get_path_ascii_icon(path)
                 )
 
             # Prepare additional information
@@ -298,7 +296,7 @@ class DirectoryTree:
 
             details_str = f" ({', '.join(details)})" if details else ""
 
-            yield f"{prefix}{icon} {path.name}{details_str}"
+            yield f"{prefix}{icon_str} {path.name}{details_str}"
 
 
 def get_directory_tree(

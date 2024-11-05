@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import functools
 import pathlib
+from typing import TypedDict
 
 
 PYCONIFY_TO_PREFIXES = {
@@ -16,6 +17,12 @@ PYCONIFY_TO_PREFIXES = {
 
 ROOT = pathlib.Path(__file__).parent
 ICON_FILE = ROOT / "resources" / "icons.json.gzip"
+
+
+class IconDict(TypedDict):
+    name: str
+    path: str
+    set: str
 
 
 @functools.cache
@@ -39,7 +46,7 @@ def _get_collection_map(*prefixes: str) -> dict[str, list[str]]:
 
 
 @functools.cache
-def _get_pyconify_icon_index(*collections: str) -> dict[str, dict[str, str]]:
+def _get_pyconify_icon_index(*collections: str) -> dict[str, IconDict]:
     """Return a icon index for the pymdownx emoji extension containing pyconify icons.
 
     The dictionaries contain three key-value pairs:
@@ -52,7 +59,7 @@ def _get_pyconify_icon_index(*collections: str) -> dict[str, dict[str, str]]:
     """
     import pyconify
 
-    index = {}
+    index: dict[str, IconDict] = {}
     for coll, prefixes in _get_collection_map(*collections).items():
         collection = pyconify.collection(coll)
         for icon_name in collection.get("uncategorized", []):
@@ -85,7 +92,7 @@ def write_icon_index():
         file.write(json.dumps(mapping).encode())
 
 
-def load_icon_index() -> dict[str, dict[str, str]]:
+def load_icon_index() -> dict[str, IconDict]:
     """Load the complete icon index from disk."""
     import gzip
     import json

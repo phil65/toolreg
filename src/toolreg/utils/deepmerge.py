@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, TypeVar
 
+
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
 
@@ -15,7 +16,9 @@ type ListType = list[Any]
 type MergerType = Callable[[Any, Any, Any], Any]
 
 
-def merge_dict(merger: DeepMerger, source: MappingType, target: MappingType,) -> MappingType:
+def merge_dict(
+    merger: DeepMerger, source: MappingType, target: MappingType
+) -> MappingType:
     """Merge two mappings recursively.
 
     Args:
@@ -95,9 +98,7 @@ class DeepMerger:
 
     mergers: dict[type[Any], MergerType] = DEFAULT_MERGERS
 
-    def __init__(
-        self, mergers: dict[type[Any], MergerType] | None = None
-    ) -> None:
+    def __init__(self, mergers: dict[type[Any], MergerType] | None = None) -> None:
         """Initialize the DeepMerger with custom merge strategies.
 
         Args:
