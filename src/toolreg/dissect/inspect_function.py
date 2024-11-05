@@ -8,9 +8,6 @@ from typing import TYPE_CHECKING, Any, TypedDict
 from upath import UPath
 import yaml
 
-from toolreg.dissect import docstringstyler
-from toolreg.tools.inspection import get_qualified_name
-
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -52,6 +49,8 @@ def inspect_function(func: Callable[..., Any]) -> FuncInfo:
 
     # Get function's qualified name
     try:
+        from toolreg.tools.inspection import get_qualified_name
+
         full_path = get_qualified_name(func)
     except ValueError as e:
         msg = "Failed to determine function path"
@@ -59,6 +58,7 @@ def inspect_function(func: Callable[..., Any]) -> FuncInfo:
 
     # Get docstring safely
     docstring = inspect.getdoc(func) or ""
+    from toolreg.dissect import docstringstyler
 
     # Detect style and parse docstring
     style = docstringstyler.detect_docstring_style(docstring)

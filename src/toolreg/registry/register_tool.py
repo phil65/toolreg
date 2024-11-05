@@ -6,8 +6,6 @@ from collections.abc import Callable
 import functools
 from typing import Any, Literal
 
-from toolreg.registry import example, registry, tool
-
 
 ItemType = Literal["filter", "test", "function"]
 FilterFunc = Callable[..., Any]
@@ -60,6 +58,8 @@ def register_tool(
     """
 
     def decorator(func: FilterFunc) -> FilterFunc:
+        from toolreg.registry import registry, tool
+
         reg_instance = registry.ToolRegistry()
 
         metadata = tool.Tool.from_function(
@@ -86,6 +86,8 @@ def register_tool(
 
 if __name__ == "__main__":
     import jinja2
+
+    from toolreg.registry import example
 
     @register_tool(
         typ="filter",

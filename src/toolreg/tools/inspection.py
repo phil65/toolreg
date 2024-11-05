@@ -1,13 +1,18 @@
+"""Module providing inspection utility functions."""
+
 from __future__ import annotations
 
-from collections.abc import Callable, Iterator
 import contextlib
 import functools
 import inspect
 import logging
-import pathlib
 import types
 from typing import Any, TypeVar
+
+from upath import UPath
+
+from toolreg.registry.example import Example
+from toolreg.registry.register_tool import register_tool
 
 
 logger = logging.getLogger(__name__)
@@ -22,29 +27,33 @@ HasCodeType = (
     | types.TracebackType
     | types.FrameType
     | types.CodeType
-    | Callable[..., Any]
+    | types.BuiltinFunctionType
 )
 
 
+@register_tool(
+    typ="filter",
+    group="inspect",
+    icon="mdi:family-tree",
+    examples=[Example(title="basic", template="""{{ list | list_subclasses }}""")],
+)
 @functools.cache
 def list_subclasses(
-    klass: ClassType,
+    klass: type,
     *,
     recursive: bool = True,
     filter_abstract: bool = False,
     filter_generic: bool = True,
     filter_locals: bool = True,
-) -> list[ClassType]:
-    """Return list of all subclasses of given klass.
-
-    Note: This call is cached. Consider iter_subclasses for uncached iterating.
+) -> list[type]:
+    """Return list of all subclasses of given class.
 
     Args:
         klass: class to get subclasses from
-        filter_abstract: whether abstract base classes should be included.
-        filter_generic: whether generic base classes should be included.
-        filter_locals: whether local base classes should be included.
-        recursive: whether to also get subclasses of subclasses.
+        recursive: whether to also get subclasses of subclasses
+        filter_abstract: whether abstract base classes should be included
+        filter_generic: whether generic base classes should be included
+        filter_locals: whether local base classes should be included
     """
     return list(
         iter_subclasses(
@@ -58,58 +67,64 @@ def list_subclasses(
 
 
 def iter_subclasses(
-    klass: ClassType,
+    klass: type,
     *,
     recursive: bool = True,
     filter_abstract: bool = False,
     filter_generic: bool = True,
     filter_locals: bool = True,
-) -> Iterator[ClassType]:
-    """(Recursively) iterate all subclasses of given klass.
+) -> Iterator[type]:
+    """Iterate all subclasses of given class.
 
     Args:
         klass: class to get subclasses from
-        filter_abstract: whether abstract base classes should be included.
-        filter_generic: whether generic base classes should be included.
-        filter_locals: whether local base classes should be included.
-        recursive: whether to also get subclasses of subclasses.
+        recursive: whether to also get subclasses of subclasses
+        filter_abstract: whether abstract base classes should be included
+        filter_generic: whether generic base classes should be included
+        filter_locals: whether local base classes should be included
     """
     if getattr(klass.__subclasses__, "__self__", None) is None:
         return
-    for kls in klass.__subclasses__():
+    for cls in klass.__subclasses__():
         if recursive:
             yield from iter_subclasses(
-                kls,
+                cls,
                 filter_abstract=filter_abstract,
                 filter_generic=filter_generic,
                 filter_locals=filter_locals,
             )
-        if filter_abstract and inspect.isabstract(kls):
+        if filter_abstract and inspect.isabstract(cls):
             continue
-        if filter_generic and kls.__qualname__.endswith("]"):
+        if filter_generic and cls.__qualname__.endswith("]"):
             continue
-        if filter_locals and "<locals>" in kls.__qualname__:
+        if filter_locals and "<locals>" in cls.__qualname__:
             continue
-        yield kls
+        yield cls
 
 
+@register_tool(
+    typ="filter",
+    group="inspect",
+    icon="mdi:family-tree",
+    examples=[Example(title="basic", template="""{{ zip | list_baseclasses }}""")],
+)
 @functools.cache
 def list_baseclasses(
-    klass: ClassType,
+    klass: type,
     *,
     recursive: bool = True,
     filter_abstract: bool = False,
     filter_generic: bool = True,
     filter_locals: bool = True,
-) -> list[ClassType]:
-    """Return list of all baseclasses of given klass.
+) -> list[type]:
+    """Return list of all base classes of given class.
 
     Args:
-        klass: class to get subclasses from
-        filter_abstract: whether abstract base classes should be included.
-        filter_generic: whether generic base classes should be included.
-        filter_locals: whether local base classes should be included.
-        recursive: whether to also get baseclasses of baseclasses.
+        klass: class to get base classes from
+        recursive: whether to also get base classes of base classes
+        filter_abstract: whether abstract base classes should be included
+        filter_generic: whether generic base classes should be included
+        filter_locals: whether local base classes should be included
     """
     return list(
         iter_baseclasses(
@@ -123,40 +138,46 @@ def list_baseclasses(
 
 
 def iter_baseclasses(
-    klass: ClassType,
+    klass: type,
     *,
     recursive: bool = True,
     filter_abstract: bool = False,
     filter_generic: bool = True,
     filter_locals: bool = True,
-) -> Iterator[ClassType]:
-    """(Recursively) iterate all baseclasses of given klass.
+) -> Iterator[type]:
+    """Iterate all base classes of given class.
 
     Args:
-        klass: class to get subclasses from
-        filter_abstract: whether abstract base classes should be included.
-        filter_generic: whether generic base classes should be included.
-        filter_locals: whether local base classes should be included.
-        recursive: whether to also get baseclasses of baseclasses.
+        klass: class to get base classes from
+        recursive: whether to also get base classes of base classes
+        filter_abstract: whether abstract base classes should be included
+        filter_generic: whether generic base classes should be included
+        filter_locals: whether local base classes should be included
     """
-    for kls in klass.__bases__:
+    for cls in klass.__bases__:
         if recursive:
             yield from iter_baseclasses(
-                kls,
+                cls,
                 recursive=recursive,
                 filter_abstract=filter_abstract,
                 filter_generic=filter_generic,
                 filter_locals=filter_locals,
             )
-        if filter_abstract and inspect.isabstract(kls):
+        if filter_abstract and inspect.isabstract(cls):
             continue
-        if filter_generic and kls.__qualname__.endswith("]"):
+        if filter_generic and cls.__qualname__.endswith("]"):
             continue
-        if filter_locals and "<locals>" in kls.__qualname__:
+        if filter_locals and "<locals>" in cls.__qualname__:
             continue
-        yield kls
+        yield cls
 
 
+@register_tool(
+    typ="filter",
+    group="inspect",
+    icon="mdi:file-document",
+    examples=[Example(title="basic", template="""{{ filters.get_doc | get_doc }}""")],
+)
 @functools.cache
 def get_doc(
     obj: Any,
@@ -195,6 +216,14 @@ def get_doc(
     return mkdown.md_escape(doc) if doc and escape else doc
 
 
+@register_tool(
+    typ="filter",
+    group="inspect",
+    icon="mdi:function",
+    examples=[
+        Example(title="basic", template="""{{ filters.get_argspec | get_argspec }}""")
+    ],
+)
 def get_argspec(obj: Any, remove_self: bool = True) -> inspect.FullArgSpec:
     """Return a cleaned-up FullArgSpec for given callable.
 
@@ -217,8 +246,8 @@ def get_argspec(obj: Any, remove_self: bool = True) -> inspect.FullArgSpec:
             argspec = inspect.getfullargspec(obj.__init__)
         if remove_self:
             del argspec.args[0]
-    elif callable(obj):
-        argspec = inspect.getfullargspec(obj.__call__)
+    elif isinstance(obj, (types.BuiltinFunctionType, types.BuiltinMethodType)):
+        argspec = inspect.getfullargspec(obj)
         if remove_self:
             del argspec.args[0]
     else:
@@ -227,6 +256,12 @@ def get_argspec(obj: Any, remove_self: bool = True) -> inspect.FullArgSpec:
     return argspec
 
 
+@register_tool(
+    typ="filter",
+    group="inspect",
+    icon="mdi:alert",
+    examples=[],
+)
 def get_deprecated_message(obj: Any) -> str | None:
     """Return deprecated message (created by deprecated decorator).
 
@@ -236,36 +271,67 @@ def get_deprecated_message(obj: Any) -> str | None:
     return obj.__deprecated__ if hasattr(obj, "__deprecated__") else None
 
 
+@register_tool(
+    typ="filter",
+    group="inspect",
+    icon="mdi:code-braces",
+    examples=[
+        Example(title="basic", template="""{{ filters.get_source | get_source }}""")
+    ],
+)
 @functools.cache
 def get_source(obj: HasCodeType) -> str:
-    """Cached wrapper for inspect.getsource.
+    """Get source code for given object.
 
     Args:
-        obj: Object to return source for.
+        obj: Object to return source for
     """
     return inspect.getsource(obj)
 
 
+@register_tool(
+    typ="filter",
+    group="inspect",
+    icon="mdi:code-array",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ filters.get_source_lines | get_source_lines }}""",
+        )
+    ],
+)
 @functools.cache
 def get_source_lines(obj: HasCodeType) -> tuple[list[str], int]:
-    """Cached wrapper for inspect.getsourcelines.
+    """Get source lines for given object.
 
     Args:
-        obj: Object to return source lines for.
+        obj: Object to return source lines for
     """
     return inspect.getsourcelines(obj)
 
 
+@register_tool(
+    typ="filter",
+    group="inspect",
+    icon="mdi:function",
+    examples=[],
+)
 @functools.cache
-def get_signature(obj: Callable[..., Any]) -> inspect.Signature:
-    """Cached wrapper for inspect.signature.
+def get_signature(obj: HasCodeType) -> inspect.Signature:
+    """Get signature for given callable.
 
     Args:
-        obj: Callable to get a signature for.
+        obj: Callable to get a signature for
     """
     return inspect.signature(obj)
 
 
+@register_tool(
+    typ="filter",
+    group="inspect",
+    icon="mdi:file-find",
+    examples=[Example(title="basic", template="""{{ filters.get_file | get_file }}""")],
+)
 @functools.cache
 def get_members(obj: object, predicate: Callable[[Any], bool] | None = None):
     """Cached version of inspect.getmembers.
@@ -285,11 +351,11 @@ def get_file(obj: HasCodeType) -> pathlib.Path | None:
         obj: Object to get file for
     """
     with contextlib.suppress(TypeError):
-        return pathlib.Path(inspect.getfile(obj))
+        return UPath(inspect.getfile(obj))
     return None
 
 
-def get_qualified_name(func: Callable[..., Any]) -> str:
+def get_qualified_name(func: HasCodeType) -> str:
     """Get the fully qualified name of a function or method.
 
     Args:
@@ -320,4 +386,4 @@ def get_qualified_name(func: Callable[..., Any]) -> str:
 
 
 if __name__ == "__main__":
-    doc = get_doc(str)
+    print(get_doc(str))

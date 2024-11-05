@@ -1,8 +1,24 @@
+"""Regular expression manipulation utilities."""
+
 from __future__ import annotations
 
 from typing import Any, Literal
 
+from toolreg.registry.example import Example
+from toolreg.registry.register_tool import register_tool
 
+
+@register_tool(
+    typ="filter",
+    group="regex",
+    icon="mdi:find-replace",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ "abc" | re_replace("b", "d") }}""",
+        )
+    ],
+)
 def re_replace(
     value: str = "",
     pattern: str = "",
@@ -17,7 +33,7 @@ def re_replace(
     Filter adapted from Ansible
 
     Args:
-        value: The value to search-replace.
+        value: The text to search-replace.
         pattern: The regex pattern to use
         replacement: The replacement pattern to use
         ignorecase: Whether to ignore casing
@@ -36,6 +52,17 @@ def re_replace(
     return output
 
 
+@register_tool(
+    typ="filter",
+    group="regex",
+    icon="mdi:text-search",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ "strings" | re_findall("s") }}""",
+        )
+    ],
+)
 def re_findall(
     value: str,
     regex: str,
@@ -63,6 +90,17 @@ def re_findall(
     return re.findall(regex, value, flags)
 
 
+@register_tool(
+    typ="filter",
+    group="regex",
+    icon="mdi:magnify",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ "string" | re_search("tri") }}""",
+        )
+    ],
+)
 def re_search(
     value: str,
     regex: str,
@@ -106,6 +144,17 @@ def re_search(
     return None
 
 
+@register_tool(
+    typ="filter",
+    group="regex",
+    icon="mdi:regex",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ "[abc]" | re_escape }}""",
+        )
+    ],
+)
 def re_escape(string: str, re_type: Literal["python", "posix_basic"] = "python") -> str:
     """Escape all regular expressions special characters from STRING.
 

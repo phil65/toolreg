@@ -1,17 +1,34 @@
+"""Text manipulation utilities for markdown."""
+
 from __future__ import annotations
 
 import re
 import types
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Literal
+
+from toolreg.registry.example import Example
+from toolreg.registry.register_tool import register_tool
 
 
 if TYPE_CHECKING:
     from collections.abc import Callable
+    from typing import Any
 
 
 HEADER_REGEX = re.compile(r"^(#{1,6}) (.*)", flags=re.MULTILINE)
 
 
+@register_tool(
+    typ="filter",
+    group="markdown",
+    icon="mdi:markdown",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ "Test" | md_link("https://google.com") }}""",
+        )
+    ],
+)
 def md_link(
     text: str | None = None,
     link: str | None = None,
@@ -32,6 +49,20 @@ def md_link(
     return f"[{text or link}]({link}{tt})"
 
 
+@register_tool(
+    typ="filter",
+    group="markdown",
+    icon="mdi:format-header-pound",
+    examples=[
+        Example(
+            title="basic",
+            template=(
+                """{{ "# Section 1\\nABC\\n# Section 2\\nDEF" | """
+                """extract_header_section("Section 2") }}"""
+            ),
+        )
+    ],
+)
 def extract_header_section(markdown: str, section_name: str) -> str | None:
     """Extract block with given header from markdown.
 
@@ -54,6 +85,12 @@ def extract_header_section(markdown: str, section_name: str) -> str | None:
     return md[start_index : end_index + start_index]
 
 
+@register_tool(
+    typ="filter",
+    group="markdown",
+    icon="mdi:markdown",
+    examples=[Example(title="basic", template="""{{ "*Test*" | md_escape }}""")],
+)
 def md_escape(text: str, entity_type: str | None = None) -> str:
     """Helper function to escape markup.
 
@@ -72,6 +109,17 @@ def md_escape(text: str, entity_type: str | None = None) -> str:
     return re.sub(f"([{re.escape(escape_chars)}])", r"\\\1", text)
 
 
+@register_tool(
+    typ="filter",
+    group="markdown",
+    icon="mdi:format-text",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ "Some text" | md_style(bold=True) }}""",
+        )
+    ],
+)
 def md_style(
     text: str,
     *,
@@ -106,6 +154,20 @@ def md_style(
     return text
 
 
+@register_tool(
+    typ="filter",
+    group="markdown",
+    icon="mdi:format-header-increase",
+    examples=[
+        Example(
+            title="basic",
+            template=(
+                """{{ "# Section 1\\nABC\\n# Section 2\\nDEF" | """
+                """shift_header_levels(4) }}"""
+            ),
+        )
+    ],
+)
 def shift_header_levels(text: str, level_shift: int) -> str:
     """Shift the level of all headers of given text.
 
@@ -127,6 +189,17 @@ def shift_header_levels(text: str, level_shift: int) -> str:
     return re.sub(HEADER_REGEX, lambda x: mod_header(x, level_shift), str(text or ""))
 
 
+@register_tool(
+    typ="filter",
+    group="markdown",
+    icon="mdi:link-box",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ "Test" | autoref_link(cycler) }}""",
+        )
+    ],
+)
 def autoref_link(
     text: str | None = None,
     link: str | types.ModuleType | Callable[..., Any] | None = None,

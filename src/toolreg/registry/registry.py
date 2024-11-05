@@ -4,8 +4,6 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, Literal
 
-from toolreg.registry.register_tool import register_tool
-
 
 type FilterFunc = Callable[..., Any]
 ItemType = Literal["filter", "test", "function"]
@@ -52,6 +50,8 @@ class ToolRegistry:
 
 if __name__ == "__main__":
     # Example 1: Basic filter with docstring-based metadata
+    from toolreg.registry.register_tool import register_tool
+
     @register_tool(typ="filter", group="text")
     def uppercase(value: str) -> str:
         """Convert string to uppercase.

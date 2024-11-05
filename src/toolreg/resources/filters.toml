@@ -10,27 +10,6 @@ template = """
 {{ "A" | repr }}
 """
 
-[filters.slugify]
-fn = "toolreg.text.slugify"
-group = "format"
-icon = "mdi:link"
-
-[filters.slugify.examples.basic]
-template = """
-{{ "Ä test" | slugify }}
-"""
-
-[filters.dirname_to_title]
-fn = "toolreg.text.dirname_to_title"
-group = "format"
-icon = "mage:folder-2"
-
-
-[filters.dirname_to_title.examples.basic]
-template = """
-{{ "a_foldername" | dirname_to_title }}
-"""
-
 [filters.get_directory_tree]
 fn = "toolreg.filetree.get_directory_tree"
 group = "path"
@@ -62,179 +41,6 @@ template = """
 {{ "scheme://netloc/path;parameters?query#fragment" | split_url }}
 {{ "scheme://netloc/path;parameters?query#fragment" | split_url("path") }}
 """
-
-[filters.format_code]
-fn = "toolreg.text.format_code"
-group = "format"
-icon = "mdi:code-braces"
-
-[filters.format_code.examples.basic]
-template = """
-{{ "AVeryLargeCodeBlock(a_parameter=3, another_parameter=4, abc=False)" | format_code }}
-"""
-
-[filters.extract_body]
-fn = "toolreg.text.extract_body"
-group = "format"
-icon = "mdi:content-cut"
-
-[filters.extract_body.examples.basic]
-template = """
-{{
-"@deprecated
-def test(a):
-    b = a
-" | extract_body }}
-"""
-
-[filters.format_signature]
-fn = "toolreg.text.format_signature"
-group = "format"
-icon = "mdi:function"
-
-[filters.format_signature.examples.basic]
-template = """
-{{ "".removesuffix | format_signature }}
-"""
-
-[filters.format_filter_signature]
-fn = "toolreg.text.format_filter_signature"
-group = "format"
-icon = "mdi:function-variant"
-
-[filters.format_filter_signature.examples.basic]
-template = """
-{{ filters.format_filter_signature | format_filter_signature("ffs") }}
-"""
-
-# Markdown
-
-[filters.md_link]
-fn = "toolreg.tools.mkdown.md_link"
-group = "markdown"
-icon = "mdi:markdown"
-
-[filters.md_link.examples.basic]
-template = """
-{{ "Test" | md_link("https://google.com") }}
-"""
-
-[filters.autoref_link]
-fn = "toolreg.tools.mkdown.autoref_link"
-group = "markdown"
-icon = "mdi:link-box"
-
-[filters.autoref_link.examples.basic]
-template = """
-{{ "Test" | autoref_link(cycler) }}
-"""
-
-[filters.md_escape]
-fn = "toolreg.tools.mkdown.md_escape"
-group = "markdown"
-icon = "mdi:markdown"
-
-[filters.md_escape.examples.basic]
-template = """
-{{ "*Test*" | md_escape }}
-"""
-
-[filters.md_style]
-fn = "toolreg.tools.mkdown.md_style"
-group = "markdown"
-icon = "mdi:format-text"
-
-[filters.md_style.examples.basic]
-template = """
-{{ "Some text" | md_style(bold=True) }}
-"""
-
-[filters.extract_header_section]
-fn = "toolreg.tools.mkdown.extract_header_section"
-group = "markdown"
-icon = "mdi:format-header-pound"
-
-[filters.extract_header_section.examples.basic]
-template = """
-{{ "# Section 1\nABC\n# Section 2\nDEF" | extract_header_section("Section 2") }}
-"""
-
-[filters.shift_header_levels]
-fn = "toolreg.tools.mkdown.shift_header_levels"
-group = "markdown"
-icon = "mdi:format-header-increase"
-
-[filters.shift_header_levels.examples.basic]
-template = """
-{{ "# Section 1\nABC\n# Section 2\nDEF" | shift_header_levels(4) }}
-"""
-
-# HTML
-
-[filters.html_link]
-fn = "toolreg.tools.html.html_link"
-group = "html"
-icon = "mdi:link"
-
-[filters.html_link.examples.basic]
-template = """
-{{ "Test" | html_link("https://google.com") }}
-"""
-
-[filters.wrap_in_elem]
-fn = "toolreg.tools.html.wrap_in_elem"
-group = "html"
-icon = "mdi:code-tags"
-
-[filters.wrap_in_elem.examples.basic]
-template = """
-{{ "abc" | wrap_in_elem("test") }}
-"""
-
-[filters.format_js_map]
-fn = "toolreg.tools.html.format_js_map"
-group = "html"
-icon = "mdi:language-javascript"
-
-[filters.format_js_map.examples.basic]
-template = """
-{{ {"abc": "def"} | format_js_map }}
-"""
-
-[filters.format_css_rule]
-fn = "toolreg.tools.html.format_css_rule"
-group = "html"
-icon = "mdi:language-css3"
-
-[filters.format_css_rule.examples.basic]
-template = """
-{{ {"a": {"b": "c"} } | format_css_rule }}
-"""
-
-[filters.svg_to_data_uri]
-fn = "toolreg.tools.html.svg_to_data_uri"
-group = "html"
-icon = "mdi:svg"
-
-[filters.svg_to_data_uri.examples.basic]
-template = """
-{{ "<svg>...</svg>" | svg_to_data_uri }}
-"""
-
-[filters.clean_svg]
-fn = "toolreg.tools.html.clean_svg"
-group = "html"
-icon = "mdi:svg"
-
-[filters.clean_svg.examples.basic]
-template = """
-{{ '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>\n<body></body>' | clean_svg }}
-"""
-
-[filters.format_xml]
-fn = "toolreg.tools.html.format_xml"
-group = "html"
-icon = "mdi:xml"
 
 [filters.format_xml.examples.basic]
 template = """
@@ -321,42 +127,6 @@ template = """
 {{ "<head>HEAD</head><body>some HTML</body>" | inject_javascript("var number = 1;", position="head") }}
 """
 
-# Itertools
-
-[filters.batched]
-fn = "toolreg.tools.iterate.batched"
-group = "iter"
-icon = "mdi:view-grid"
-
-[filters.batched.examples.basic]
-template = """
-{% for a, b in range(10) | batched(2) %}
-{{ a }}: {{ b }}
-{% endfor %}
-"""
-
-[filters.groupby_plus]
-fn = "toolreg.tools.iterate.groupby"
-group = "iter"
-icon = "mdi:group"
-
-[filters.groupby_plus.examples.basic]
-template = """
-{{ ["20", "20", "100", "0"] | groupby_plus(natural_sort=True) }}
-"""
-
-[filters.chain]
-fn = "toolreg.tools.iterate.chain"
-group = "iter"
-icon = "mdi:link-chain"
-
-[filters.chain.examples.basic]
-template = """
-{% for val in range(3) | chain(range(5)) %}
-{{ val }}
-{% endfor %}
-"""
-
 [filters.combinations]
 fn = "itertools.combinations"
 group = "iter"
@@ -393,60 +163,6 @@ template = """
 {% endfor %}
 """
 
-[filters.islice]
-fn = "toolreg.tools.iterate.islice"
-group = "iter"
-icon = "mdi:segment"
-
-[filters.islice.examples.basic]
-template = """
-{% for val in "ABCDEFG" | islice(2) %}
-{{ val }}
-{% endfor %}
-"""
-
-[filters.groupby_first_letter]
-fn = "toolreg.tools.iterate.groupby_first_letter"
-group = "iter"
-icon = "mdi:alphabetical"
-
-[filters.groupby_first_letter.examples.basic]
-template = """
-{{ ["apple", "banana", "cherry", "avocado", "carrot", "blueberry"] | groupby_first_letter }}
-"""
-
-[filters.reduce_list]
-fn = "toolreg.tools.iterate.reduce_list"
-group = "iter"
-icon = "mdi:list-status"
-
-[filters.reduce_list.examples.basic]
-template = """
-{{ ["1", "2", "3", "1"] | reduce_list }}
-"""
-
-[filters.flatten_dict]
-fn = "toolreg.tools.iterate.flatten_dict"
-group = "iter"
-icon = "mdi:unfold-more-horizontal"
-
-[filters.flatten_dict.examples.basic]
-template = """
-{{ {"a": {"b": {"c": "d"} } } | flatten_dict }}
-"""
-
-[filters.pairwise]
-fn = "toolreg.tools.iterate.pairwise"
-group = "iter"
-icon = "mdi:compare"
-
-[filters.pairwise.examples.basic]
-template = """
-{% for a, b in [1, 2, 3, 4] | pairwise %}
-{{ a }}: {{ b }}
-{% endfor %}
-"""
-
 [filters.permutations]
 fn = "itertools.permutations"
 group = "iter"
@@ -457,179 +173,6 @@ template = """
 {% for val in "ABCD" | permutations(2) %}
 {{ val }}
 {% endfor %}
-"""
-
-[filters.product]
-fn = "toolreg.tools.iterate.product"
-group = "iter"
-icon = "mdi:multiplication"
-
-[filters.product.examples.basic]
-template = """
-{% for val in "ABCD" | product("xy") %}
-{{ val }}
-{% endfor %}
-"""
-
-[filters.repeat]
-fn = "toolreg.tools.iterate.repeat"
-group = "iter"
-icon = "mdi:repeat"
-
-[filters.repeat.examples.basic]
-template = """
-{% for val in "ABCD" | repeat(2) %}
-{{ val }}
-{% endfor %}
-"""
-
-[filters.zip]
-fn = "toolreg.tools.iterate.do_zip"
-group = "iter"
-icon = "mdi:zip-box"
-
-[filters.zip.examples.basic]
-template = """
-{% for a, b in [1, 2] | zip([3, 4]) %}
-{{ a }}: {{ b }}
-{% endfor %}
-"""
-
-[filters.zip_longest]
-fn = "toolreg.tools.iterate.zip_longest"
-group = "iter"
-icon = "mdi:zip-box-outline"
-
-[filters.zip_longest.examples.basic]
-template = """
-{% for val in "ABCD" | zip_longest("xy", fillvalue="-") %}
-{{ val }}
-{% endfor %}
-"""
-
-[filters.natsort]
-fn = "toolreg.tools.iterate.natsort"
-group = "iter"
-icon = "mdi:sort-alphabetical-ascending"
-required_packages = ["natsort"]
-
-[filters.natsort.examples.basic]
-template = """
-{{ ["A1", "B1", "A2", "A10"] | natsort }}
-"""
-
-[filters.any]
-fn = "toolreg.tools.iterate.do_any"
-group = "iter"
-icon = "mdi:check-circle-outline"
-
-[filters.any.examples.basic]
-template = """
-{{ [True, False] | any }}
-"""
-
-# Text
-
-[filters.rstrip]
-fn = "toolreg.text.rstrip"
-group = "text"
-icon = "mdi:format-align-right"
-
-[filters.rstrip.examples.basic]
-template = """
-{{ "abc " | rstrip }}
-"""
-
-[filters.lstrip]
-fn = "toolreg.text.lstrip"
-group = "text"
-icon = "mdi:format-align-left"
-
-[filters.lstrip.examples.basic]
-template = """
-{{ " abc" | lstrip }}
-"""
-
-[filters.lower_camel_case]
-fn = "toolreg.text.lower_camel_case"
-group = "text"
-icon = "mdi:format-letter-case"
-
-[filters.lower_camel_case.examples.basic]
-template = """
-{{ "some_text" | lower_camel_case }}
-"""
-
-[filters.snake_case]
-fn = "toolreg.text.snake_case"
-group = "text"
-icon = "mdi:format-letter-case-lower"
-
-[filters.snake_case.examples.basic]
-template = """
-{{ " someText" | snake_case }}
-"""
-
-[filters.removesuffix]
-fn = "toolreg.text.removesuffix"
-group = "text"
-icon = "mdi:format-letter-ends-with"
-
-[filters.removesuffix.examples.basic]
-template = """
-{{ "acccc" | removesuffix("c") }}
-"""
-
-[filters.removeprefix]
-fn = "toolreg.text.removeprefix"
-group = "text"
-icon = "mdi:format-letter-starts-with"
-
-[filters.removeprefix.examples.basic]
-template = """
-{{ "ccca" | removeprefix("c") }}
-"""
-
-# Regex
-
-[filters.re_replace]
-fn = "toolreg.regexfilters.re_replace"
-group = "regex"
-icon = "mdi:find-replace"
-
-[filters.re_replace.examples.basic]
-template = """
-{{ "abc" | re_replace("b", "d") }}
-"""
-
-[filters.re_findall]
-fn = "toolreg.regexfilters.re_findall"
-group = "regex"
-icon = "mdi:text-search"
-
-[filters.re_findall.examples.basic]
-template = """
-{{ "strings" | re_findall("s") }}
-"""
-
-[filters.re_search]
-fn = "toolreg.regexfilters.re_search"
-group = "regex"
-icon = "mdi:magnify"
-
-[filters.re_search.examples.basic]
-template = """
-{{ "string" | re_search("tri") }}
-"""
-
-[filters.re_escape]
-fn = "toolreg.regexfilters.re_escape"
-group = "regex"
-icon = "mdi:regex"
-
-[filters.re_escape.examples.basic]
-template = """
-{{ "[abc]" | re_escape }}
 """
 
 # Serialize
@@ -665,7 +208,7 @@ template = """
 """
 
 [filters.serialize]
-fn = "toolreg.tools..serialize"
+fn = "toolreg.tools.serialize"
 group = "serialize"
 icon = "mdi:file-export"
 
@@ -675,7 +218,7 @@ template = """
 """
 
 [filters.deserialize]
-fn = "toolreg.tools..deserialize"
+fn = "toolreg.tools.deserialize"
 group = "serialize"
 icon = "mdi:file-import"
 
@@ -685,7 +228,7 @@ template = """
 """
 
 [filters.dig]
-fn = "toolreg.tools..dig"
+fn = "toolreg.tools.dig"
 group = "serialize"
 icon = "mdi:shovel"
 
@@ -700,7 +243,7 @@ template = """
 """
 
 [filters.merge]
-fn = "toolreg.tools..merge"
+fn = "toolreg.tools.merge"
 group = "serialize"
 icon = "mdi:merge"
 
@@ -787,7 +330,7 @@ template = """
 """
 
 [filters.get_doc]
-fn = "toolreg.toolreg.get_doc"
+fn = "toolreg.tools.inspection.get_doc"
 group = "inspect"
 icon = "mdi:file-document"
 
@@ -797,7 +340,7 @@ template = """
 """
 
 [filters.get_argspec]
-fn = "toolreg.toolreg.get_argspec"
+fn = "toolreg.tools.inspection.get_argspec"
 group = "inspect"
 icon = "mdi:function"
 
@@ -979,63 +522,8 @@ template = """
 {{ [1, 2, 3] | sample(2) }}
 """
 
-[filters.list_subclasses]
-fn = "toolreg.toolreg.list_subclasses"
-group = "inspect"
-icon = "mdi:family-tree"
-
-[filters.list_subclasses.examples.basic]
-template = """
-{{ list | list_subclasses }}
-"""
-
-[filters.list_baseclasses]
-fn = "toolreg.toolreg.list_baseclasses"
-group = "inspect"
-icon = "mdi:family-tree"
-
-[filters.list_baseclasses.examples.basic]
-template = """
-{{ zip | list_baseclasses }}
-"""
-
-[filters.get_deprecated_message]
-fn = "toolreg.toolreg.get_deprecated_message"
-group = "inspect"
-icon = "mdi:alert"
-
-[filters.get_source]
-fn = "toolreg.toolreg.get_source"
-group = "inspect"
-icon = "mdi:code-braces"
-
-[filters.get_source.examples.basic]
-template = """
-{{ filters.get_source | get_source }}
-"""
-
-[filters.get_source_lines]
-fn = "toolreg.toolreg.get_source_lines"
-group = "inspect"
-icon = "mdi:code-array"
-
-[filters.get_source_lines.examples.basic]
-template = """
-{{ filters.get_source_lines | get_source_lines }}
-"""
-
-[filters.get_signature]
-fn = "toolreg.toolreg.get_signature"
-group = "inspect"
-icon = "mdi:function"
-
-[filters.get_signature.examples.basic]
-template = """
-{{ filters.get_signature | get_signature }}
-"""
-
 [filters.get_file]
-fn = "toolreg.toolreg.get_file"
+fn = "toolreg.tools.inspection.get_file"
 group = "inspect"
 icon = "mdi:file-find"
 
@@ -1139,14 +627,4 @@ template = """
 [filters.get_path_ascii_icon.examples.folder]
 template = """
 {{ "src/" | get_path_ascii_icon }}
-"""
-
-[filters.format_timestamp]
-fn = "toolreg.text.format_timestamp"
-group = "time"
-icon = "mdi:clock"
-
-[filters.format_timestamp.examples.basic]
-template = """
-{{ 1594819641.9622827 | format_timestamp("%Y-%m-%d %H:%M:%S") }}
 """

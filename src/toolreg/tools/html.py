@@ -1,6 +1,9 @@
+"""HTML manipulation utilities."""
+
 from __future__ import annotations
 
 import base64
+from collections.abc import Callable
 import functools
 import json
 import logging
@@ -11,10 +14,12 @@ from xml.etree import ElementTree as ET
 
 import requests
 
+from toolreg.registry.example import Example
+from toolreg.registry.register_tool import register_tool
+
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
-
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +55,12 @@ ANSI_STYLES = {
 }
 
 
+@register_tool(
+    typ="filter",
+    group="html",
+    icon="mdi:code-tags",
+    examples=[Example(title="basic", template="""{{ "abc" | wrap_in_elem("test") }}""")],
+)
 def wrap_in_elem(
     text: str | None,
     tag: str,
@@ -75,6 +86,16 @@ def wrap_in_elem(
     return f"<{tag}{attr_str}>{nl}{text}{nl}</{tag}>"
 
 
+@register_tool(
+    typ="filter",
+    group="html",
+    icon="mdi:link",
+    examples=[
+        Example(
+            title="basic", template="""{{ "Test" | html_link("https://google.com") }}"""
+        )
+    ],
+)
 def html_link(text: str | None = None, link: str | None = None, **kwargs: Any) -> str:
     """Create a html link.
 
@@ -93,7 +114,15 @@ def html_link(text: str | None = None, link: str | None = None, **kwargs: Any) -
     return f"<a href={link!r}{attr_str}>{text or link}</a>"
 
 
-def format_js_map(mapping: dict | str, indent: int = 4) -> str:
+@register_tool(
+    typ="filter",
+    group="html",
+    icon="mdi:language-javascript",
+    examples=[
+        Example(title="basic", template="""{{ {"abc": "def"} | format_js_map }}""")
+    ],
+)
+def format_js_map(mapping: dict[str, Any] | str, indent: int = 4) -> str:
     """Return JS map str for given dictionary.
 
     Args:
@@ -117,6 +146,14 @@ def format_js_map(mapping: dict | str, indent: int = 4) -> str:
     return f"{{{row_str}}}"
 
 
+@register_tool(
+    typ="filter",
+    group="html",
+    icon="mdi:svg",
+    examples=[
+        Example(title="basic", template="""{{ "<svg>...</svg>" | svg_to_data_uri }}""")
+    ],
+)
 def svg_to_data_uri(svg: str) -> str:
     """Wrap svg as data URL.
 
@@ -126,6 +163,20 @@ def svg_to_data_uri(svg: str) -> str:
     return f"url('data:image/svg+xml;charset=utf-8,{svg}')"
 
 
+@register_tool(
+    typ="filter",
+    group="html",
+    icon="mdi:svg",
+    examples=[
+        Example(
+            title="basic",
+            template=(
+                """{{ '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>"""
+                """\n<body></body>' | clean_svg }}"""
+            ),
+        )
+    ],
+)
 def clean_svg(text: str) -> str:
     """Strip off unwanted stuff from svg text which might be added by external libs.
 
@@ -139,6 +190,14 @@ def clean_svg(text: str) -> str:
     return text.strip()
 
 
+@register_tool(
+    typ="filter",
+    group="html",
+    icon="mdi:language-css3",
+    examples=[
+        Example(title="basic", template="""{{ {"a": {"b": "c"} } | format_css_rule }}""")
+    ],
+)
 def format_css_rule(dct: Mapping[str, Any]) -> str:
     """Format a nested dictionary as CSS rule.
 
@@ -155,7 +214,6 @@ def format_css_rule(dct: Mapping[str, Any]) -> str:
                 rule = selector + " " + key
                 data[rule] = []
                 _parse(value, rule)
-
             else:
                 prop: list[str] = data[selector]
                 prop.append(f"\t{key}: {value};\n")
@@ -168,6 +226,20 @@ def format_css_rule(dct: Mapping[str, Any]) -> str:
     return string
 
 
+@register_tool(
+    typ="filter",
+    group="html",
+    icon="mdi:xml",
+    examples=[
+        Example(
+            title="basic", template="""{{ '<a><b><c>Hello!</c></b></a>' | format_xml }}"""
+        ),
+        Example(
+            title="with_declaration",
+            template="""{{ '<a><b><c>Hello!</c></b></a>' | format_xml(indent=4) }}""",
+        ),
+    ],
+)
 @functools.lru_cache
 def format_xml(
     str_or_elem: str | ET.Element,
@@ -272,15 +344,15 @@ def split_url(value: str, query: QueryStr | None = None) -> str | dict[str, str]
     Args:
         value: The URL to split
         query: Optional URL part to extract
+
+    Returns:
+        Either a dictionary of all URL parts or a specific part if query is specified
     """
     from urllib.parse import urlsplit
 
     def object_to_dict(obj: Any, exclude: list[str] | None = None) -> dict[str, Any]:
-        """Converts an object into a dict making the properties into keys.
-
-        Allows excluding certain keys.
-        """
-        if exclude is None or not isinstance(exclude, list):
+        """Convert an object into a dict making the properties into keys."""
+        if exclude is None:
             exclude = []
         return {
             key: getattr(obj, key)
@@ -296,13 +368,21 @@ def split_url(value: str, query: QueryStr | None = None) -> str | dict[str, str]
     if not query:
         return results
     if query not in results:
-        msg = "split_url: unknown URL component: %s"
-        raise ValueError(msg, query)
+        msg = f"split_url: unknown URL component: {query}"
+        raise ValueError(msg)
     return results[query]
 
 
 @functools.lru_cache
 def _get_norm_url(path: str) -> tuple[str, int]:
+    """Normalize URL path and get its relative level.
+
+    Args:
+        path: The path to normalize
+
+    Returns:
+        Tuple of normalized path and relative level
+    """
     from urllib.parse import urlsplit
 
     if not path:
@@ -327,6 +407,17 @@ def _get_norm_url(path: str) -> tuple[str, int]:
     return path, relative_level
 
 
+@register_tool(
+    typ="filter",
+    group="html",
+    icon="mdi:link-variant",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ "test" | normalize_url(base="https://phil65.github.io") }}""",
+        )
+    ],
+)
 @functools.lru_cache
 def normalize_url(path: str, url: str | None = None, base: str = "") -> str:
     """Return a URL relative to the given url or using the base.
@@ -335,6 +426,9 @@ def normalize_url(path: str, url: str | None = None, base: str = "") -> str:
         path: The path to normalize
         url: Optional relative url
         base: Base path
+
+    Returns:
+        Normalized URL
     """
     path, relative_level = _get_norm_url(path)
     if relative_level == -1:
@@ -349,12 +443,34 @@ def normalize_url(path: str, url: str | None = None, base: str = "") -> str:
 
 @functools.cache
 def _norm_parts(path: str) -> list[str]:
+    """Normalize path and split into parts.
+
+    Args:
+        path: Path to normalize and split
+
+    Returns:
+        List of path parts
+    """
     if not path.startswith("/"):
         path = "/" + path
     path = posixpath.normpath(path)[1:]
     return path.split("/") if path else []
 
 
+@register_tool(
+    typ="filter",
+    group="html",
+    icon="mdi:link-relative",
+    examples=[
+        Example(
+            title="basic",
+            template=(
+                """{{ "https://phil65.github.io" | """
+                """relative_url_mkdocs("https://phil65.github.io/mknodes") }}"""
+            ),
+        )
+    ],
+)
 def relative_url_mkdocs(url: str, other: str) -> str:
     """Return given url relative to other (MkDocs implementation).
 
@@ -365,8 +481,11 @@ def relative_url_mkdocs(url: str, other: str) -> str:
     root has no effect ('foo/../../bar' ends up just as 'bar').
 
     Args:
-        url: URL A.
-        other: URL B.
+        url: URL A
+        other: URL B
+
+    Returns:
+        Relative URL path
     """
     # Remove filename from other url if it has one.
     dirname, _, basename = other.rpartition("/")
@@ -386,16 +505,30 @@ def relative_url_mkdocs(url: str, other: str) -> str:
     return relurl + "/" if url.endswith("/") else relurl
 
 
+@register_tool(
+    typ="filter",
+    group="html",
+    icon="mdi:link-relative",
+    examples=[
+        Example(
+            title="basic",
+            template=(
+                """{{ "https://phil65.github.io" | """
+                """relative_url("https://phil65.github.io/mknodes") }}"""
+            ),
+        )
+    ],
+)
 @functools.lru_cache
 def relative_url(url_a: str, url_b: str) -> str:
     """Compute the relative path from URL A to URL B.
 
     Args:
-        url_a: URL A.
-        url_b: URL B.
+        url_a: URL A
+        url_b: URL B
 
     Returns:
-        The relative URL to go from A to B.
+        The relative URL to go from A to B
     """
     parts_a = url_a.split("/")
     if "#" in url_b:
@@ -416,25 +549,32 @@ def relative_url(url_a: str, url_b: str) -> str:
     return f"{relative}#{anchor}" if anchor else relative
 
 
+@register_tool(
+    typ="filter",
+    group="html",
+    icon="mdi:base64",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ "https://picsum.photos/100/100" | url_to_b64 }}""",
+        )
+    ],
+)
 def url_to_b64(image_url: str) -> str | None:
     """Convert an image URL to a base64-encoded string.
 
     Args:
-        image_url: The URL of the image to convert.
+        image_url: The URL of the image to convert
 
     Returns:
-        The base64-encoded string of the image.
+        The base64-encoded string of the image
 
     Raises:
-        requests.RequestException: If there's an error downloading the image.
+        requests.RequestException: If there's an error downloading the image
     """
-    # Download the image
     response = requests.get(image_url)
     response.raise_for_status()
-    image_data = response.content
-
-    # Encode the image to base64
-    return base64.b64encode(image_data).decode("utf-8")
+    return base64.b64encode(response.content).decode("utf-8")
 
 
 StrOrBytes = TypeVar("StrOrBytes", bytes, str)
@@ -445,6 +585,27 @@ ContentType = TypeVar("ContentType", str, bytes)
 Position = Literal["body", "head", "end_head", "end_body"]
 
 
+@register_tool(
+    typ="filter",
+    group="html",
+    icon="mdi:source-code",
+    examples=[
+        Example(
+            title="basic",
+            template=(
+                """{{ "<body>some HTML</body>" | """
+                """inject_javascript("var number = 1;") }}"""
+            ),
+        ),
+        Example(
+            title="with_position",
+            template=(
+                """{{ "<head>HEAD</head><body>some HTML</body>" | """
+                """inject_javascript("var number = 1;", position="head") }}"""
+            ),
+        ),
+    ],
+)
 def inject_javascript(
     html_content: ContentType,
     javascript: str,
@@ -473,7 +634,7 @@ def inject_javascript(
     script_tag = f"<script>{javascript}</script>"
 
     # Define the injection patterns
-    patterns = {
+    patterns: dict[str, tuple[str, Callable[..., Any]]] = {
         "body": (r"<body[^>]*>", lambda m: f"{m.group(0)}{script_tag}"),
         "head": (r"<head[^>]*>", lambda m: f"{m.group(0)}{script_tag}"),
         "end_head": (r"</head>", lambda m: f"{script_tag}{m.group(0)}"),

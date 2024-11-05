@@ -5,10 +5,26 @@ import itertools
 import operator
 from typing import Any, TypeVar
 
+from toolreg.registry.example import Example
+from toolreg.registry.register_tool import register_tool
+
 
 T = TypeVar("T")
 
 
+@register_tool(
+    typ="filter",
+    group="iter",
+    icon="mdi:compare",
+    examples=[
+        Example(
+            title="basic",
+            template="""{% for a, b in [1, 2, 3, 4] | pairwise %}
+{{ a }}: {{ b }}
+{% endfor %}""",
+        )
+    ],
+)
 def pairwise(items: Iterable[T]) -> itertools.pairwise[tuple[T, T]]:
     """Return an iterator of overlapping pairs taken from the input iterator.
 
@@ -20,6 +36,19 @@ def pairwise(items: Iterable[T]) -> itertools.pairwise[tuple[T, T]]:
     return itertools.pairwise(items)
 
 
+@register_tool(
+    typ="filter",
+    group="iter",
+    icon="mdi:link-chain",
+    examples=[
+        Example(
+            title="basic",
+            template="""{% for val in range(3) | chain(range(5)) %}
+{{ val }}
+{% endfor %}""",
+        )
+    ],
+)
 def chain(*iterables: Iterable[T]) -> itertools.chain[T]:
     """Chain all given iterators.
 
@@ -37,6 +66,19 @@ def chain(*iterables: Iterable[T]) -> itertools.chain[T]:
     return itertools.chain(*iterables)
 
 
+@register_tool(
+    typ="filter",
+    group="iter",
+    icon="mdi:multiplication",
+    examples=[
+        Example(
+            title="basic",
+            template="""{% for val in "ABCD" | product("xy") %}
+{{ val }}
+{% endfor %}""",
+        )
+    ],
+)
 def product(
     *iterables: Iterable[Any],
     repeat: int = 1,
@@ -67,6 +109,19 @@ def product(
     return itertools.product(*iterables, repeat=repeat)
 
 
+@register_tool(
+    typ="filter",
+    group="iter",
+    icon="mdi:repeat",
+    examples=[
+        Example(
+            title="basic",
+            template="""{% for val in "ABCD" | repeat(2) %}
+{{ val }}
+{% endfor %}""",
+        )
+    ],
+)
 def repeat(obj: T, times: int | None = None) -> Iterable[T]:
     """Make an iterator that returns object over and over again.
 
@@ -86,6 +141,19 @@ def repeat(obj: T, times: int | None = None) -> Iterable[T]:
     return itertools.repeat(obj)
 
 
+@register_tool(
+    typ="filter",
+    group="iter",
+    icon="mdi:zip-box-outline",
+    examples=[
+        Example(
+            title="basic",
+            template="""{% for val in "ABCD" | zip_longest("xy", fillvalue="-") %}
+{{ val }}
+{% endfor %}""",
+        )
+    ],
+)
 def zip_longest(*iterables: Iterable[Any], fillvalue: Any = None) -> Iterable[Any]:
     """Make an iterator that aggregates elements from each of the iterables.
 
@@ -101,9 +169,24 @@ def zip_longest(*iterables: Iterable[Any], fillvalue: Any = None) -> Iterable[An
         iterables: The iterables to zip
         fillvalue: value to use for filling in case the iterables are of uneven length
     """
-    return itertools.zip_longest(*iterables, fillvalue)
+    return itertools.zip_longest(*iterables, fillvalue=fillvalue)
 
 
+@register_tool(
+    typ="filter",
+    group="iter",
+    icon="mdi:segment",
+    examples=[
+        Example(
+            title="basic",
+            template=(
+                """{% for val in "ABCDEFG" | islice(2) %}"""
+                """{{ val }}"""
+                """{% endfor %}"""
+            ),
+        )
+    ],
+)
 def islice(iterable: Iterable[T], *args: int | None) -> itertools.islice[T]:
     """Make an iterator that returns selected elements from the iterable.
 
@@ -136,6 +219,20 @@ def islice(iterable: Iterable[T], *args: int | None) -> itertools.islice[T]:
     return itertools.islice(iterable, *args)
 
 
+@register_tool(
+    typ="filter",
+    group="iter",
+    icon="mdi:zip-box",
+    examples=[
+        Example(
+            title="basic",
+            template="""
+{% for a, b in [1, 2] | zip([3, 4]) %}
+{{ a }}: {{ b }}
+{% endfor %}""",
+        )
+    ],
+)
 def do_zip(*items: Iterable[T]) -> zip[tuple[T, ...]]:
     """Zip iterables into a single one.
 
@@ -145,6 +242,17 @@ def do_zip(*items: Iterable[T]) -> zip[tuple[T, ...]]:
     return zip(*items)
 
 
+@register_tool(
+    typ="filter",
+    group="iter",
+    icon="mdi:list-status",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ ["1", "2", "3", "1"] | reduce_list }}""",
+        )
+    ],
+)
 def reduce_list(items: Iterable[T]) -> list[T]:
     """Reduce duplicate items in a list and preserve order.
 
@@ -154,6 +262,17 @@ def reduce_list(items: Iterable[T]) -> list[T]:
     return list(dict.fromkeys(items))
 
 
+@register_tool(
+    typ="filter",
+    group="iter",
+    icon="mdi:unfold-more-horizontal",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ {"a": {"b": {"c": "d"} } } | flatten_dict }}""",
+        )
+    ],
+)
 def flatten_dict(dct: Mapping, sep: str = "/", _parent_key: str = "") -> Mapping:
     """Flatten a nested dictionary to a flat one.
 
@@ -162,6 +281,7 @@ def flatten_dict(dct: Mapping, sep: str = "/", _parent_key: str = "") -> Mapping
     Args:
         dct: The dictionary to flatten
         sep: The separator to use for joining
+        _parent_key: Internal parameter for recursive calls
     """
     items: list[tuple[str, str]] = []
     for k, v in dct.items():
@@ -174,6 +294,19 @@ def flatten_dict(dct: Mapping, sep: str = "/", _parent_key: str = "") -> Mapping
     return dict(items)
 
 
+@register_tool(
+    typ="filter",
+    group="iter",
+    icon="mdi:view-grid",
+    examples=[
+        Example(
+            title="basic",
+            template="""{% for a, b in range(10) | batched(2) %}
+{{ a }}: {{ b }}
+{% endfor %}""",
+        )
+    ],
+)
 def batched(iterable: Iterable[T], n: int) -> Generator[tuple[T, ...], None, None]:
     """Batch data into tuples of length n. The last batch may be shorter.
 
@@ -196,6 +329,17 @@ def batched(iterable: Iterable[T], n: int) -> Generator[tuple[T, ...], None, Non
         yield batch
 
 
+@register_tool(
+    typ="filter",
+    group="iter",
+    icon="mdi:sort-alphabetical-ascending",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ ["A1", "B1", "A2", "A10"] | natsort }}""",
+        )
+    ],
+)
 def natsort(
     val: Iterable[T],
     key: str | Callable[[T], Any] | None = None,
@@ -222,6 +366,17 @@ def natsort(
     return natsorted(val, key=key_fn, reverse=reverse, alg=alg)
 
 
+@register_tool(
+    typ="filter",
+    group="iter",
+    icon="mdi:group",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ ["20", "20", "100", "0"] | groupby_plus(natural_sort=True) }}""",
+        )
+    ],
+)
 def groupby(
     data: Iterable[T],
     key: Callable[[T], Any] | str | None = None,
@@ -260,6 +415,17 @@ def groupby(
     return {k: list(g) for k, g in itertools.groupby(data, keyfunc)}
 
 
+@register_tool(
+    typ="filter",
+    group="iter",
+    icon="mdi:alphabetical",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ ["apple", "banana", "cherry", "avocado"] | groupby_first_letter }}""",
+        )
+    ],
+)
 def groupby_first_letter(
     data: Iterable[T],
     keyfunc: Callable[..., Any] | None = None,
@@ -278,6 +444,17 @@ def groupby_first_letter(
     return {k.upper(): list(g) for k, g in itertools.groupby(data, first_letter)}
 
 
+@register_tool(
+    typ="filter",
+    group="iter",
+    icon="mdi:check-circle-outline",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ [True, False] | any }}""",
+        )
+    ],
+)
 def do_any(seq: Iterable[Any], attribute: str | None = None) -> bool:
     """Check if at least one of the item in the sequence evaluates to true.
 
@@ -290,3 +467,10 @@ def do_any(seq: Iterable[Any], attribute: str | None = None) -> bool:
     if attribute is None:
         return any(seq)
     return any(getattr(i, attribute) for i in seq)
+
+
+if __name__ == "__main__":
+    # Example test
+    data = ["A1", "B1", "A2", "A10"]
+    result = natsort(data)
+    print(list(result))  # Should print: ['A1', 'A2', 'A10', 'B1']

@@ -1,3 +1,5 @@
+"""Miscellaneous utility functions."""
+
 from __future__ import annotations
 
 import datetime
@@ -7,6 +9,8 @@ from typing import TYPE_CHECKING, Any
 
 import upath
 
+from toolreg.registry.example import Example
+from toolreg.registry.register_tool import register_tool
 from toolreg.utils import decorators as dec
 
 
@@ -18,6 +22,17 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+@register_tool(
+    typ="filter",
+    group="misc",
+    icon="mdi:file",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ "github://phil65:mknodes@main/docs/icons.jinja" | load_file }}""",
+        )
+    ],
+)
 @dec.cache_with_transforms(arg_transformers={0: lambda p: upath.UPath(p).resolve()})
 def load_file_cached(path: str | os.PathLike[str]) -> str:
     """Return the text-content of file at given path.
@@ -34,6 +49,12 @@ def load_file_cached(path: str | os.PathLike[str]) -> str:
 _cache: dict[str, str] = {}
 
 
+@register_tool(
+    typ="filter",
+    group="misc",
+    icon="mdi:console",
+    examples=[Example(title="basic", template="""{{ "dir" | check_output }}""")],
+)
 def get_output_from_call(
     call: str | Sequence[str],
     cwd: str | os.PathLike[str] | None = None,
@@ -65,6 +86,12 @@ def get_output_from_call(
         return None
 
 
+@register_tool(
+    typ="filter",
+    group="misc",
+    icon="mdi:plus",
+    examples=[Example(title="basic", template="""{{ "a" | add("b", "c") }}""")],
+)
 def add(text: str | None, prefix: str = "", suffix: str = "") -> str:
     """Add a pre- or suffix to a value if the value is true-ish.
 
@@ -76,7 +103,13 @@ def add(text: str | None, prefix: str = "", suffix: str = "") -> str:
     return f"{prefix}{text}{suffix}" if text else ""
 
 
-def ternary(value: Any, true_val: Any, false_val: Any, none_val: Any = None):
+@register_tool(
+    typ="filter",
+    group="misc",
+    icon="mdi:code-greater-than",
+    examples=[Example(title="basic", template="""{{ True | ternary("A", "B") }}""")],
+)
+def ternary(value: Any, true_val: Any, false_val: Any, none_val: Any = None) -> Any:
     """Value ? true_val : false_val.
 
     Args:
@@ -90,15 +123,24 @@ def ternary(value: Any, true_val: Any, false_val: Any, none_val: Any = None):
     return true_val if bool(value) else false_val
 
 
+@register_tool(
+    typ="filter",
+    group="misc",
+    icon="mdi:equal",
+    examples=[
+        Example(title="basic", template="""{{ "a" | match(a="Hit", b="miss") }}"""),
+        Example(title="types", template="""{{ 5 | match({int: "hit", str: "miss"}) }}"""),
+    ],
+)
 def match(obj: Any, mapping: dict[str | type, str] | None = None, **kwargs: Any) -> str:
     """A filter trying to imitate a python match-case statement.
 
     Args:
         obj: match object
         mapping: a mapping for the different cases. If key is type, an isinstance will
-                 be performed. If key is a str, check for equality.
+               be performed. If key is a str, check for equality.
         kwargs: Same functionality as mapping, but provided as keyword arguments for
-                convenience.
+               convenience.
 
     Examples:
         ``` jinja

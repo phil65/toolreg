@@ -1,20 +1,32 @@
+"""Serialization utilities."""
+
 from __future__ import annotations
 
 import configparser
 import io
 import json
-from typing import TYPE_CHECKING, Any, Literal
+from typing import Any, Literal
 
 from jinjarope import deepmerge
 
-
-if TYPE_CHECKING:
-    from collections.abc import Callable
+from toolreg.registry.example import Example
+from toolreg.registry.register_tool import register_tool
 
 
 SerializeFormatStr = Literal["yaml", "json", "ini", "toml"]
 
 
+@register_tool(
+    typ="filter",
+    group="serialize",
+    icon="mdi:file-export",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ {"a": "b"} | serialize("toml") }}""",
+        )
+    ],
+)
 def serialize(data: Any, fmt: SerializeFormatStr, **kwargs: Any) -> str:
     """Serialize given json-like object to given format.
 
@@ -42,17 +54,37 @@ def serialize(data: Any, fmt: SerializeFormatStr, **kwargs: Any) -> str:
 
             return tomli_w.dumps(data, **kwargs)
         case _:
-            raise TypeError(fmt)
+            msg = f"Unsupported format: {fmt}"
+            raise TypeError(msg)
 
 
 def load_ini(data: str) -> dict[str, dict[str, str]]:
+    """Load INI format string into a dictionary.
+
+    Args:
+        data: INI format string to parse
+
+    Returns:
+        Dictionary containing the parsed INI data
+    """
     config = configparser.ConfigParser()
     config.read_string(data)
     return {s: dict(config.items(s)) for s in config.sections()}
 
 
+@register_tool(
+    typ="filter",
+    group="serialize",
+    icon="mdi:file-import",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ "[abc.def]\\nvalue = 1" | deserialize("toml") }}""",
+        )
+    ],
+)
 def deserialize(data: str, fmt: SerializeFormatStr, **kwargs: Any) -> Any:
-    """Serialize given json-like object to given format.
+    """Deserialize given string in specified format to a Python object.
 
     Args:
         data: The data to deserialize
@@ -73,11 +105,33 @@ def deserialize(data: str, fmt: SerializeFormatStr, **kwargs: Any) -> Any:
 
             return tomllib.loads(data, **kwargs)
         case _:
-            raise TypeError(fmt)
+            msg = f"Unsupported format: {fmt}"
+            raise TypeError(msg)
 
 
+@register_tool(
+    typ="filter",
+    group="serialize",
+    icon="mdi:shovel",
+    examples=[
+        Example(
+            title="basic",
+            template=(
+                """{{ {"section1": {"section2": {"section3": "Hello, World"} } } """
+                """| dig("section1", "section2") }}"""
+            ),
+        ),
+        Example(
+            title="keep_path",
+            template=(
+                """{{ {"section1": {"section2": {"section3": "Hello, World"} } } """
+                """| dig("section1", "section2", keep_path=True) }}"""
+            ),
+        ),
+    ],
+)
 def dig(
-    data: dict,
+    data: dict[str, Any],
     *sections: str,
     keep_path: bool = False,
     dig_yaml_lists: bool = True,
@@ -93,7 +147,7 @@ def dig(
         data: The data to dig into
         sections: Sections to dig into
         keep_path: Return result with original nesting
-        dig_yaml_lists: Also dig into single-key->value pairs, as often found in yaml.
+        dig_yaml_lists: Also dig into single-key->value pairs, as in yaml
     """
     for i in sections:
         if isinstance(data, dict):
@@ -122,6 +176,17 @@ def dig(
     return new
 
 
+@register_tool(
+    typ="filter",
+    group="serialize",
+    icon="mdi:merge",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ {"a": {"b": 1} } | merge({"a": {"c": 2} }) }}""",
+        )
+    ],
+)
 def merge(
     target: list | dict,
     *source: list | dict,
@@ -132,7 +197,7 @@ def merge(
 
     Args:
         target: Data structure to merge into
-        source:  Data structures to merge into target
+        source: Data structures to merge into target
         deepcopy: Whether to deepcopy the target
         mergers: Mergers with strategies for each type (default: additive)
     """
