@@ -18,7 +18,7 @@ def register_tool(
     *,
     name: str | None = None,
     group: str = "general",
-    examples: example.ExampleDict | None = None,
+    examples: example.ExampleList | None = None,
     required_packages: list[str] | None = None,
     aliases: list[str] | None = None,
     icon: str | None = None,
@@ -90,14 +90,14 @@ if __name__ == "__main__":
     @register_tool(
         typ="filter",
         group="text",
-        examples={
-            "basic": example.Example(
+        examples=[
+            example.Example(
                 template="{{ 'hello' | upper }}",
                 title="Basic Example",
                 description="Basic uppercase example",
                 markdown=False,
             )
-        },
+        ],
         icon="mdi:format-letter-case-upper",
     )
     def uppercase(value: str) -> str:

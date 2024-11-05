@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 class FuncInfo(TypedDict):
     fn: str
     description: str
-    examples: example.ExampleDict
+    examples: example.ExampleList
 
 
 def inspect_function(func: Callable[..., Any]) -> FuncInfo:
@@ -65,7 +65,7 @@ def inspect_function(func: Callable[..., Any]) -> FuncInfo:
     doc = docstringstyler.parse_docstring(docstring, style=style.value)
 
     # Initialize result dictionary
-    result: FuncInfo = {"fn": full_path, "description": "", "examples": {}}
+    result: FuncInfo = {"fn": full_path, "description": "", "examples": []}
 
     # Extract description from parsed sections
     for section in doc:
@@ -74,13 +74,13 @@ def inspect_function(func: Callable[..., Any]) -> FuncInfo:
             break
 
     # Extract examples from parsed sections
-    examples: example.ExampleDict = {}
+    examples: example.ExampleList = []
     for section in doc:
         if section.kind == "examples":
-            for i, example in enumerate(section.value):
-                example_name = f"example_{i + 1}" if len(section.value) > 1 else "basic"
+            for example in section.value:
                 if example_text := str(example).strip():
-                    examples[example_name] = example.Example(template=example_text)
+                    ex = example.Example(template=example_text)
+                    examples.append(ex)
 
     if examples:
         result["examples"] = examples

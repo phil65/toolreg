@@ -22,10 +22,8 @@ class Tool(BaseModel):
     """ptional description of what the item does"""
     group: str = "general"
     """roup/category for organizing items"""
-    # examples: list[Example] = Field(default_factory=list)
-    examples: dict[str, example.Example] = Field(default_factory=dict)
-    # or dict[str, Example] ?
-    """ist of usage examples"""
+    examples: example.ExampleList = Field(default_factory=list)
+    """List of usage examples"""
     required_packages: list[str] = Field(default_factory=list)
     """ython packages required for this item"""
     aliases: list[str] = Field(default_factory=list)
@@ -41,7 +39,7 @@ class Tool(BaseModel):
         typ: ItemType,
         name: str | None = None,
         group: str | None = None,
-        examples: example.ExampleDict | None = None,
+        examples: example.ExampleList | None = None,
         required_packages: list[str] | None = None,
         aliases: list[str] | None = None,
         icon: str | None = None,
@@ -84,17 +82,12 @@ class Tool(BaseModel):
         extracted = inspect_function.inspect_function(func)
 
         # Convert examples to Example model instances
-        extracted_examples = {
-            name: example.Example.model_validate(ex)
-            for name, ex in extracted.get("examples", {}).items()
-        }
+        extracted_examples = [
+            example.Example.model_validate(ex) for ex in extracted.get("examples", [])
+        ]
 
         # If examples provided in kwargs, use those instead
-        final_examples = extracted_examples
-        if examples:
-            final_examples = {
-                name: example.Example.model_validate(ex) for name, ex in examples.items()
-            }
+        final_examples = examples if examples is not None else extracted_examples
         # Build metadata dict with explicit precedence
         metadata = {
             "name": name if name is not None else func.__name__,
