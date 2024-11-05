@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-import re
 from typing import Final
 
 import griffe
 
+from toolreg.dissect import docstring_patterns
 from toolreg.dissect.docstringstyle import DocstringStyle
 
 
@@ -103,54 +103,6 @@ class DocStringStyler:
         self._example_formatter = formatter
 
 
-# Combine patterns into a dictionary
-_DOCSTRING_PATTERNS: Final[dict[DocstringStyle, list[re.Pattern[str]]]] = {
-    DocstringStyle.GOOGLE: [
-        re.compile(r"\s*Args:\s*$", re.MULTILINE),
-        re.compile(r"\s*Returns:\s*$", re.MULTILINE),
-        re.compile(r"\s*Raises:\s*$", re.MULTILINE),
-    ],
-    DocstringStyle.NUMPY: [
-        re.compile(r"\s*Parameters\s*\n\s*----------\s*$", re.MULTILINE),
-        re.compile(r"\s*Returns\s*\n\s*-------\s*$", re.MULTILINE),
-    ],
-    DocstringStyle.SPHINX: [
-        re.compile(r":param\s+\w+:", re.MULTILINE),
-        re.compile(r":returns?:", re.MULTILINE),
-        re.compile(r":raises?\s+\w+:", re.MULTILINE),
-    ],
-    DocstringStyle.RST: [
-        re.compile(r"\.\.\s+\w+::", re.MULTILINE),
-        re.compile(r"^\s*\.\.\s+note::", re.MULTILINE),
-        re.compile(r"^\s*\.\.\s+warning::", re.MULTILINE),
-    ],
-}
-
-# Compile patterns once for better performance
-_GOOGLE_PATTERNS: Final[list[re.Pattern[str]]] = [
-    re.compile(r"\s*Args:\s*$", re.MULTILINE),
-    re.compile(r"\s*Returns:\s*$", re.MULTILINE),
-    re.compile(r"\s*Raises:\s*$", re.MULTILINE),
-]
-
-_NUMPY_PATTERNS: Final[list[re.Pattern[str]]] = [
-    re.compile(r"\s*Parameters\s*\n\s*----------\s*$", re.MULTILINE),
-    re.compile(r"\s*Returns\s*\n\s*-------\s*$", re.MULTILINE),
-]
-
-_SPHINX_PATTERNS: Final[list[re.Pattern[str]]] = [
-    re.compile(r":param\s+\w+:", re.MULTILINE),
-    re.compile(r":returns?:", re.MULTILINE),
-    re.compile(r":raises?\s+\w+:", re.MULTILINE),
-]
-
-_RST_PATTERNS: Final[list[re.Pattern[str]]] = [
-    re.compile(r"\.\.\s+\w+::", re.MULTILINE),
-    re.compile(r"^\s*\.\.\s+note::", re.MULTILINE),
-    re.compile(r"^\s*\.\.\s+warning::", re.MULTILINE),
-]
-
-
 def detect_docstring_style(docstring: str) -> DocstringStyle:
     """Detect the style of a given docstring.
 
@@ -176,7 +128,7 @@ def detect_docstring_style(docstring: str) -> DocstringStyle:
     # Clean the docstring for consistent analysis
     cleaned_docstring = docstring.strip()
 
-    for style, patterns in _DOCSTRING_PATTERNS.items():
+    for style, patterns in docstring_patterns.DOCSTRING_PATTERNS.items():
         if any(pattern.search(cleaned_docstring) for pattern in patterns):
             return style
 

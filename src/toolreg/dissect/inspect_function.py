@@ -3,49 +3,25 @@
 from __future__ import annotations
 
 import inspect
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, TypedDict
 
 from upath import UPath
 import yaml
 
-from toolreg.dissect import detect_docstring_style
+from toolreg.dissect import docstringstyler
+from toolreg.tools.inspection import get_qualified_name
 
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-type ExampleDict = dict[str, dict[str, str]]
-type FuncInfo = dict[str, str | ExampleDict]
+    from toolreg.registry import example
 
 
-def get_qualified_name(func: Callable[..., Any]) -> str:
-    """Get the fully qualified name of a function or method.
-
-    Args:
-        func: The function or method to inspect
-
-    Returns:
-        Fully qualified name as string
-
-    Raises:
-        ValueError: If function path cannot be determined
-    """
-    match func:
-        case _ if inspect.ismethod(func):
-            if hasattr(func, "__self__"):
-                if inspect.isclass(func.__self__):  # classmethod
-                    return f"{func.__self__.__module__}.{func.__qualname__}"
-                # instance method
-                return f"{func.__self__.__class__.__module__}.{func.__qualname__}"
-            # static method
-            return f"{func.__module__}.{func.__qualname__}"
-        case _ if inspect.isfunction(func):
-            return f"{func.__module__}.{func.__qualname__}"
-        case _ if hasattr(func, "__module__") and hasattr(func, "__qualname__"):
-            return f"{func.__module__}.{func.__qualname__}"
-        case _:
-            msg = f"Could not determine import path for {func}"
-            raise ValueError(msg)
+class FuncInfo(TypedDict):
+    fn: str
+    description: str
+    examples: example.ExampleDict
 
 
 def inspect_function(func: Callable[..., Any]) -> FuncInfo:
@@ -85,14 +61,11 @@ def inspect_function(func: Callable[..., Any]) -> FuncInfo:
     docstring = inspect.getdoc(func) or ""
 
     # Detect style and parse docstring
-    style = detect_docstring_style.detect_docstring_style(docstring)
-    doc = detect_docstring_style.parse_docstring(docstring, style=style.value)
+    style = docstringstyler.detect_docstring_style(docstring)
+    doc = docstringstyler.parse_docstring(docstring, style=style.value)
 
     # Initialize result dictionary
-    result: FuncInfo = {
-        "fn": full_path,
-        "description": "",
-    }
+    result: FuncInfo = {"fn": full_path, "description": "", "examples": {}}
 
     # Extract description from parsed sections
     for section in doc:
@@ -101,13 +74,13 @@ def inspect_function(func: Callable[..., Any]) -> FuncInfo:
             break
 
     # Extract examples from parsed sections
-    examples: ExampleDict = {}
+    examples: example.ExampleDict = {}
     for section in doc:
         if section.kind == "examples":
             for i, example in enumerate(section.value):
                 example_name = f"example_{i + 1}" if len(section.value) > 1 else "basic"
                 if example_text := str(example).strip():
-                    examples[example_name] = {"template": example_text}
+                    examples[example_name] = example.Example(template=example_text)
 
     if examples:
         result["examples"] = examples

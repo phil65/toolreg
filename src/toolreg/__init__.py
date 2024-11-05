@@ -1,5 +1,5 @@
 __version__ = "0.0.1"
 
-from toolreg.registry.tool import Tool
+from toolreg.registry.tool import ToolMetadata
 
-__all__ = ["Tool"]
+__all__ = ["ToolMetadata"]
