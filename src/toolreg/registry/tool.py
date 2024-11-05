@@ -1,13 +1,17 @@
-from typing import Literal
+from collections.abc import Callable
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
+
+from toolreg.utils import resolve
 
 
 class Example(BaseModel):
     """Represents an example for a Jinja item."""
 
-    input: str = Field(description="The input string or expression for the example")
-    output: str = Field(description="The expected output of the example")
+    template: str = Field(description="The input string or expression for the example")
+    markdown: bool = Field(True, description="Whether the example needs markdown fencing")
+    description: str = Field("", description="Description of the example")
 
 
 class Tool(BaseModel):
@@ -35,6 +39,28 @@ class Tool(BaseModel):
         default_factory=list,
         description="List of package names required for this item to function",
     )
+
+    @property
+    def filter_fn(self) -> Callable[..., Any]:
+        """Return the callable to use as filter / test / function."""
+        try:
+            obj = resolve.resolve(self.fn)
+        except AttributeError:
+            msg = f"Could not import jinja item {self.identifier!r} from {self.fn!r}"
+            raise ImportError(msg) from AttributeError
+        if not callable(obj):
+            msg = "Filter needs correct, importable Path for callable"
+            raise TypeError(msg)
+        return obj
+
+    def apply(self, *args: Any, **kwargs: Any) -> Any:
+        """Apply the filter function using given arguments and keywords.
+
+        Args:
+            args: The arguments for the call
+            kwargs: They keyword arguments for the call
+        """
+        return self.filter_fn(*args, **kwargs)
 
     class Config:
         frozen = True
