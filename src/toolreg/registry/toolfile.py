@@ -20,7 +20,7 @@ def _load(txt: str) -> dict[str, Any]:
     return tomllib.loads(txt)
 
 
-class JinjaFile(dict[str, Any]):
+class ToolFile(dict[str, Any]):
     """A file defining filters / tests."""
 
     def __init__(self, path: str | os.PathLike[str]):
@@ -176,5 +176,5 @@ class Tool:
 
 
 if __name__ == "__main__":
-    file = JinjaFile("src/toolreg/resources/filters.toml")
+    file = ToolFile("src/toolreg/resources/filters.toml")
     print(file.filters[5].resolve_example("basic"))

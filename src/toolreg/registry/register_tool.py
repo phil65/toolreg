@@ -32,7 +32,7 @@ class ToolMetadata(BaseModel):
     """ame of the jinja item"""
     typ: ItemType
     """ype of the item (filter, test, or function)"""
-    import_path: ImportString[str]
+    import_path: ImportString[Callable[..., Any]]
     """mport path in the format "package.module.function"""
     description: str | None = None
     """ptional description of what the item does"""
@@ -135,7 +135,7 @@ class JinjaRegistry:
         }
 
 
-def register_jinjaitem(
+def register_tool(
     typ: ItemType,
     *,
     name: str | None = None,
@@ -160,7 +160,7 @@ def register_jinjaitem(
 
     Example:
         ```python
-        @register_jinjaitem(
+        @register_tool(
             typ="filter",
             group="text",
             examples=[
@@ -220,7 +220,7 @@ def register_jinjaitem(
 if __name__ == "__main__":
     import jinja2
 
-    @register_jinjaitem(
+    @register_tool(
         typ="filter",
         group="text",
         examples=[
@@ -247,13 +247,13 @@ if __name__ == "__main__":
     # Test with a class method and static method
     class TestClass:
         @classmethod
-        @register_jinjaitem(typ="filter", group="test")
+        @register_tool(typ="filter", group="test")
         def class_method(cls, value: str) -> str:
             """Test class method."""
             return value
 
         @staticmethod
-        @register_jinjaitem(typ="filter", group="test")
+        @register_tool(typ="filter", group="test")
         def static_method(value: str) -> str:
             """Test static method."""
             return value
