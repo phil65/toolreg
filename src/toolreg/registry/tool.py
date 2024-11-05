@@ -9,16 +9,6 @@ from toolreg.registry.registry import FilterFunc, ItemType
 from toolreg.utils import resolve, slugfield
 
 
-class Example(BaseModel):
-    """Example model for jinja items."""
-
-    # content: str = Field(description="Template content to render")
-    template: str = Field(description="The input string or expression for the example")
-    title: str = Field(default="", description="Title of the example")
-    description: str | None = Field(default=None, description="Example description")
-    markdown: bool = Field(default=False, description="Whether content is markdown")
-
-
 class ToolMetadata(BaseModel):
     """Metadata for a jinja item."""
 
@@ -33,7 +23,7 @@ class ToolMetadata(BaseModel):
     group: str = "general"
     """roup/category for organizing items"""
     # examples: list[Example] = Field(default_factory=list)
-    examples: dict[str, Example] = Field(default_factory=dict)
+    examples: dict[str, example.Example] = Field(default_factory=dict)
     # or dict[str, Example] ?
     """ist of usage examples"""
     required_packages: list[str] = Field(default_factory=list)
@@ -95,18 +85,16 @@ class ToolMetadata(BaseModel):
 
         # Convert examples to Example model instances
         extracted_examples = {
-            name: Example.model_validate(ex)
+            name: example.Example.model_validate(ex)
             for name, ex in extracted.get("examples", {}).items()
         }
 
         # If examples provided in kwargs, use those instead
         final_examples = extracted_examples
-        if examples is not None:
+        if examples:
             final_examples = {
-                name: Example.model_validate(example)
-                for name, example in examples.items()
+                name: example.Example.model_validate(ex) for name, ex in examples.items()
             }
-
         # Build metadata dict with explicit precedence
         metadata = {
             "name": name if name is not None else func.__name__,

@@ -60,7 +60,7 @@ def register_tool(
     """
 
     def decorator(func: FilterFunc) -> FilterFunc:
-        reg_instance = registry.JinjaRegistry()
+        reg_instance = registry.ToolRegistry()
 
         metadata = tool.ToolMetadata.from_function(
             func=func,
@@ -131,7 +131,7 @@ if __name__ == "__main__":
             super().__init__(*args, **kwargs)
 
             # Load all registered filters
-            reg = registry.JinjaRegistry()
+            reg = registry.ToolRegistry()
             for name, (func, _metadata) in reg.get_all(typ="filter").items():
                 self.filters[name] = func
 

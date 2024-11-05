@@ -15,12 +15,12 @@ if TYPE_CHECKING:
     from toolreg.registry import tool
 
 
-class JinjaRegistry:
+class ToolRegistry:
     """Singleton registry for jinja items."""
 
-    _instance: JinjaRegistry | None = None
+    _instance: ToolRegistry | None = None
 
-    def __new__(cls) -> JinjaRegistry:  # noqa: PYI034
+    def __new__(cls) -> ToolRegistry:  # noqa: PYI034
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
