@@ -273,6 +273,17 @@ def format_xml(
     )
 
 
+@register_tool(
+    typ="filter",
+    group="html",
+    icon="mdi:console",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ "\\033[31;1;4mHello\\033[0m" | ansi2html }}""",
+        )
+    ],
+)
 def ansi2html(ansi_string: str, styles: dict[int, dict[str, str]] | None = None) -> str:
     """Convert ansi string to colored HTML.
 
@@ -336,6 +347,21 @@ def ansi2html(ansi_string: str, styles: dict[int, dict[str, str]] | None = None)
     return "".join(parts)
 
 
+@register_tool(
+    typ="filter",
+    group="format",
+    icon="mdi:link-variant",
+    examples=[
+        Example(
+            title="basic",
+            template=(
+                """{{ "scheme://netloc/path;parameters?query#fragment" | split_url }}"""
+                """{{ "scheme://netloc/path;parameters?query#fragment" | """
+                """split_url("path") }}"""
+            ),
+        )
+    ],
+)
 @functools.lru_cache
 def split_url(value: str, query: QueryStr | None = None) -> str | dict[str, str]:
     """Split a URL into its parts (and optionally return a specific part).

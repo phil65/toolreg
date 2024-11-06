@@ -10,6 +10,8 @@ from typing import TYPE_CHECKING, Any
 from jinja2 import filters
 import upath
 
+from toolreg.registry.example import Example
+from toolreg.registry.register_tool import register_tool
 from toolreg.tools import icon, text
 
 
@@ -299,6 +301,18 @@ class DirectoryTree:
             yield f"{prefix}{icon_str} {path.name}{details_str}"
 
 
+@register_tool(
+    typ="filter",
+    group="path",
+    icon="mdi:file-tree-outline",
+    examples=[
+        Example(
+            title="basic",
+            template='{{ "." | get_directory_tree(allowed_extensions=[".py", ".md"]) }}',
+            markdown=True,
+        )
+    ],
+)
 def get_directory_tree(
     root_path: str | os.PathLike[str],
     *,

@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING, Final, Literal, TypedDict
 
 import upath
 
+from toolreg.registry.example import Example
+from toolreg.registry.register_tool import register_tool
 from toolreg.utils import icons
 
 
@@ -415,6 +417,24 @@ ICONIFY_ICONS: Final[dict[str, AsciiIconMapping]] = {
 }
 
 
+@register_tool(
+    typ="filter",
+    group="html",
+    icon="mdi:link-variant",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ "path/to/file.py" | get_path_icon }}""",
+        ),
+        Example(
+            title="advanced",
+            template=(
+                """{{ "path/to/file.py" | get_path_icon | """
+                """get_icon_svg(color='#ff0000', height=32, width=32) }}"""
+            ),
+        ),
+    ],
+)
 def get_path_icon(path: str | os.PathLike[str]) -> str:
     """Get the icon mapping for a given file path or directory.
 
@@ -441,6 +461,21 @@ def get_path_icon(path: str | os.PathLike[str]) -> str:
     )["icon"]
 
 
+@register_tool(
+    typ="filter",
+    group="html",
+    icon="mdi:favicon",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ 'example.com' | get_favicon }}""",
+        ),
+        Example(
+            title="google",
+            template="""{{ 'example.com' | get_favicon(provider='google', size=64) }}""",
+        ),
+    ],
+)
 def get_favicon(
     url: str,
     provider: Literal[
@@ -481,6 +516,29 @@ def get_favicon(
             raise ValueError(msg)
 
 
+@register_tool(
+    typ="filter",
+    group="html",
+    icon="mdi:svg",
+    required_packages=["pyconify"],
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ 'mdi:file' | get_icon_svg }}""",
+        ),
+        Example(
+            title="styled",
+            template=(
+                """{{ 'mdi:file' | get_icon_svg(color='#ff0000', """
+                """height=32, width=32) }}"""
+            ),
+        ),
+        Example(
+            title="transformed",
+            template="""{{ 'mdi:file' | get_icon_svg(flip='horizontal', rotate=90) }}""",
+        ),
+    ],
+)
 def get_icon_svg(
     icon: str,
     color: str | None = None,
@@ -544,6 +602,22 @@ def get_icon_svg(
     return label
 
 
+@register_tool(
+    typ="filter",
+    group="html",
+    icon="mdi:key",
+    required_packages=["pyconify"],
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ 'material/file' | get_pyconify_key }}""",
+        ),
+        Example(
+            title="emoji",
+            template="""{{ ':material-file:' | get_pyconify_key }}""",
+        ),
+    ],
+)
 def get_pyconify_key(icon: str) -> str:
     """Convert given string to a pyconify key.
 
@@ -570,6 +644,21 @@ def get_pyconify_key(icon: str) -> str:
     return icon
 
 
+@register_tool(
+    typ="filter",
+    group="html",
+    icon="vscode-icons:default-file",
+    examples=[
+        Example(
+            title="basic",
+            template="""{{ "path/to/file.py" | get_path_ascii_icon }}""",
+        ),
+        Example(
+            title="folder",
+            template="""{{ "src/" | get_path_ascii_icon }}""",
+        ),
+    ],
+)
 def get_path_ascii_icon(path: str | os.PathLike[str]) -> str:
     """Get an ASCII icon for a given file path based on its type.
 
