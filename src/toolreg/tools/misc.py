@@ -164,6 +164,14 @@ def match(obj: Any, mapping: dict[str | type, str] | None = None, **kwargs: Any)
     return ""
 
 
+@register_tool(
+    typ="function",
+    group="misc",
+    icon="mdi:web",
+    examples=[
+        Example(title="basic", template="""{% if has_internet %}True!{% endif %}""")
+    ],
+)
 def has_internet() -> bool:
     """Return true if machine is connected to internet.
 
@@ -181,6 +189,12 @@ def has_internet() -> bool:
         conn.close()
 
 
+@register_tool(
+    typ="function",
+    group="misc",
+    icon="mdi:time",
+    examples=[Example(title="basic", template="""{{ now() }}""")],
+)
 def now(tz: datetime.tzinfo | None = None) -> datetime.datetime:
     """Get current Datetime.
 
@@ -190,6 +204,12 @@ def now(tz: datetime.tzinfo | None = None) -> datetime.datetime:
     return datetime.datetime.now(tz)
 
 
+@register_tool(
+    typ="function",
+    group="misc",
+    icon="mdi:time",
+    examples=[Example(title="basic", template="""{{ utcnow() }}""")],
+)
 def utcnow() -> datetime.datetime:
     """Get UTC datetime."""
     return datetime.datetime.now(datetime.UTC)
