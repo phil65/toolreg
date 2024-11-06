@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum, auto
+import logging
 import re
 from re import Pattern
 import stat
@@ -218,8 +219,8 @@ class DirectoryTree:
                 key=self._get_sort_key,
                 reverse=self.options.reverse_sort,
             )
-        except (PermissionError, OSError) as e:
-            print(f"Error accessing {directory}: {e}")
+        except (PermissionError, OSError):
+            logging.exception("Error accessing %r", directory)
             return entries
 
         # Filter paths and check if they're empty (if directories)

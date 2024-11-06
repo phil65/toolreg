@@ -359,35 +359,5 @@ def get_file(obj: HasCodeType) -> UPath | None:
     return None
 
 
-def get_qualified_name(func: Any) -> str:
-    """Get the fully qualified name of a function or method.
-
-    Args:
-        func: The function or method to inspect
-
-    Returns:
-        Fully qualified name as string
-
-    Raises:
-        ValueError: If function path cannot be determined
-    """
-    match func:
-        case _ if inspect.ismethod(func):
-            if hasattr(func, "__self__"):
-                if inspect.isclass(func.__self__):  # classmethod
-                    return f"{func.__self__.__module__}.{func.__qualname__}"
-                # instance method
-                return f"{func.__self__.__class__.__module__}.{func.__qualname__}"
-            # static method
-            return f"{func.__module__}.{func.__qualname__}"
-        case _ if inspect.isfunction(func):
-            return f"{func.__module__}.{func.__qualname__}"
-        case _ if hasattr(func, "__module__") and hasattr(func, "__qualname__"):
-            return f"{func.__module__}.{func.__qualname__}"
-        case _:
-            msg = f"Could not determine import path for {func}"
-            raise ValueError(msg)
-
-
 if __name__ == "__main__":
     print(get_doc(str))

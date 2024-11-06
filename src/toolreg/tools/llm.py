@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib
 import inspect
+import logging
 import os
 from typing import TYPE_CHECKING, Any
 
@@ -114,8 +115,8 @@ def generate_class_schemas(cls_instance: Any) -> list[dict[str, Any]]:
             try:
                 schema = generate_openai_schema(method)
                 schemas.append(schema)
-            except ValueError as e:
-                print(f"Skipping method '{name}': {e!s}")
+            except ValueError:
+                logging.exception("Skipping method %r", name)
 
     return schemas
 
@@ -277,5 +278,4 @@ if __name__ == "__main__":
         image_url="https://picsum.photos/200/300",
         model="ollama/llava",
     )
-    print(response)
     print(response)

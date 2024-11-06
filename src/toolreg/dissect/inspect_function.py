@@ -8,11 +8,11 @@ from typing import TYPE_CHECKING, Any, TypedDict
 from upath import UPath
 import yaml
 
+from toolreg.registry import example
+
 
 if TYPE_CHECKING:
     from collections.abc import Callable
-
-    from toolreg.registry import example
 
 
 class FuncInfo(TypedDict):
@@ -47,17 +47,18 @@ def inspect_function(func: Callable[..., Any]) -> FuncInfo:
         msg = "Argument must be a callable"
         raise TypeError(msg)
 
+    # Unwrap decorators to get to the original function
+    original_fn = inspect.unwrap(func)
+
     # Get function's qualified name
     try:
-        from toolreg.tools.inspection import get_qualified_name
-
-        full_path = get_qualified_name(func)
+        full_path = get_qualified_name(original_fn)
     except ValueError as e:
         msg = "Failed to determine function path"
         raise ValueError(msg) from e
 
     # Get docstring safely
-    docstring = inspect.getdoc(func) or ""
+    docstring = inspect.getdoc(original_fn) or ""
     from toolreg.dissect import docstringstyler
 
     # Detect style and parse docstring
@@ -67,24 +68,18 @@ def inspect_function(func: Callable[..., Any]) -> FuncInfo:
     # Initialize result dictionary
     result: FuncInfo = {"fn": full_path, "description": "", "examples": []}
 
-    # Extract description from parsed sections
+    # Extract description and examples
     for section in doc:
-        if section.kind == "text":
-            result["description"] = section.value.strip()
-            break
-
-    # Extract examples from parsed sections
-    examples: example.ExampleList = []
-    for section in doc:
-        if section.kind == "examples":
-            for example in section.value:
-                if example_text := str(example).strip():
-                    ex = example.Example(template=example_text)
-                    examples.append(ex)
-
-    if examples:
-        result["examples"] = examples
-
+        match section.kind:
+            case "text":
+                result["description"] = section.value.strip()
+            case "examples":
+                examples = [
+                    example.Example(template=str(ex).strip())
+                    for ex in section.value
+                    if str(ex).strip()
+                ]
+                result["examples"].extend(examples)
     return result
 
 
@@ -131,6 +126,36 @@ def generate_function_docs(
                 raise ValueError(msg)
 
     return result
+
+
+def get_qualified_name(func: Any) -> str:
+    """Get the fully qualified name of a function or method.
+
+    Args:
+        func: The function or method to inspect
+
+    Returns:
+        Fully qualified name as string
+
+    Raises:
+        ValueError: If function path cannot be determined
+    """
+    match func:
+        case _ if inspect.ismethod(func):
+            if hasattr(func, "__self__"):
+                if inspect.isclass(func.__self__):  # classmethod
+                    return f"{func.__self__.__module__}.{func.__qualname__}"
+                # instance method
+                return f"{func.__self__.__class__.__module__}.{func.__qualname__}"
+            # static method
+            return f"{func.__module__}.{func.__qualname__}"
+        case _ if inspect.isfunction(func):
+            return f"{func.__module__}.{func.__qualname__}"
+        case _ if hasattr(func, "__module__") and hasattr(func, "__qualname__"):
+            return f"{func.__module__}.{func.__qualname__}"
+        case _:
+            msg = f"Could not determine import path for {func}"
+            raise ValueError(msg)
 
 
 if __name__ == "__main__":

@@ -1,85 +1,124 @@
+"""Tool registration functionality."""
+
 from __future__ import annotations
 
 import functools
-from typing import TYPE_CHECKING, Any, ClassVar
+import logging
+from typing import TYPE_CHECKING, Any
 
-from toolreg.registry import example, registry, tool
+from toolreg.registry import registry, tool
 
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from toolreg.registry.example import Example
+    from toolreg.registry.registry import FilterFunc, ItemType
+
 
 class ToolRegistrar:
-    """Manages tool registration with deferred processing."""
+    """Manages tool registration.
 
-    _instance: ClassVar[ToolRegistrar | None] = None
-    _pending_registrations: list[tuple[Callable[..., Any], dict[str, Any]]]
+    This class handles registering tools with associated metadata. It provides
+    a clean interface for both decorator-based and direct registration.
 
-    def __new__(cls) -> ToolRegistrar:  # noqa: PYI034
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
+    Example:
+        ```python
+        # Direct registration
+        registrar = ToolRegistrar()
+        registrar.load_fn(my_func, typ="filter", group="text")
+
+        # Or via decorator
+        @register_tool(typ="filter", group="text")
+        def my_func(): ...
+        ```
+    """
 
     def __init__(self) -> None:
-        if not hasattr(self, "_pending_registrations"):
-            self._pending_registrations = []
+        """Initialize the registrar with a registry instance."""
+        self._registry = registry.ToolRegistry()
 
-    def add_pending(
+    def load_fn(
         self,
         func: Callable[..., Any],
-        metadata_kwargs: dict[str, Any],
+        *,
+        typ: ItemType,
+        name: str | None = None,
+        group: str = "general",
+        examples: list[Example] | None = None,
+        required_packages: list[str] | None = None,
+        aliases: list[str] | None = None,
+        icon: str | None = None,
+        description: str | None = None,
     ) -> None:
-        """Queue a function for later registration."""
-        self._pending_registrations.append((func, metadata_kwargs))
+        """Load and register a function as a tool.
 
-    def process_pending(self) -> None:
-        """Process all pending registrations.
+        Args:
+            func: The function to register
+            typ: Type of tool (filter, test, function)
+            name: Optional override for function name
+            group: Group/category for the tool
+            examples: List of usage examples
+            required_packages: Required package names
+            aliases: Alternative names for the tool
+            icon: Icon identifier
+            description: Optional override for function description
 
-        This method creates the metadata and registers all pending tools with the
-        ToolRegistry.
+        Raises:
+            ValueError: If validation of the function or metadata fails
+            RuntimeError: If registration fails
         """
-        reg = registry.ToolRegistry()
+        try:
+            metadata = tool.Tool.from_function(
+                func=func,
+                typ=typ,
+                name=name,
+                group=group,
+                examples=examples,
+                required_packages=required_packages,
+                aliases=aliases,
+                icon=icon,
+                description=description,
+            )
+        except Exception as e:
+            msg = f"Failed to create metadata for {func.__name__}"
+            logging.exception(msg)
+            raise ValueError(msg) from e
 
-        for func, metadata_kwargs in self._pending_registrations:
-            try:
-                metadata = tool.Tool.from_function(func=func, **metadata_kwargs)
-                reg.register(func, metadata)
-            except Exception as e:
-                # Log error but continue processing other registrations
-                msg = f"Failed to register {func.__name__}: {e}"
-                raise RuntimeError(msg) from e
-
-        # Clear processed registrations
-        self._pending_registrations.clear()
+        try:
+            self._registry.register(func, metadata)
+        except Exception as e:
+            msg = f"Failed to register {func.__name__}"
+            raise RuntimeError(msg) from e
 
 
 def register_tool(
-    typ: registry.ItemType,
+    typ: ItemType,
     *,
     name: str | None = None,
     group: str = "general",
-    examples: list[example.Example] | None = None,
+    examples: list[Example] | None = None,
     required_packages: list[str] | None = None,
     aliases: list[str] | None = None,
     icon: str | None = None,
     description: str | None = None,
-) -> Callable[[registry.FilterFunc], registry.FilterFunc]:
-    """Decorator to queue a tool for registration.
+) -> Callable[[FilterFunc], FilterFunc]:
+    """Decorator to register a function as a tool.
 
-    Instead of immediately processing and registering the tool, this decorator
-    queues the function for later registration. The actual registration happens
-    when ToolRegistrar.process_pending() is called.
+    This decorator uses ToolRegistrar to handle the actual registration process.
 
     Args:
-        typ: Type of item (filter, test, function)
-        name: Optional name override
-        group: Group/category for the item
+        typ: Type of tool (filter, test, function)
+        name: Optional override for function name
+        group: Group/category for the tool
         examples: List of usage examples
         required_packages: Required package names
-        aliases: Alternative names for the item
+        aliases: Alternative names for the tool
         icon: Icon identifier
         description: Optional override for function description
+
+    Returns:
+        Decorator function that preserves the original function while registering it
 
     Example:
         ```python
@@ -97,30 +136,22 @@ def register_tool(
         def uppercase(value: str) -> str:
             '''Convert string to uppercase.'''
             return value.upper()
-
-        # Later, when ready to process:
-        ToolRegistrar().process_pending()
         ```
-
-    Returns:
-        Decorated function
     """
 
-    def decorator(func: registry.FilterFunc) -> registry.FilterFunc:
-        # Store metadata args for later processing
-        metadata_kwargs = {
-            "typ": typ,
-            "name": name,
-            "group": group,
-            "examples": examples,
-            "required_packages": required_packages,
-            "aliases": aliases,
-            "icon": icon,
-            "description": description,
-        }
-
+    def decorator(func: FilterFunc) -> FilterFunc:
         registrar = ToolRegistrar()
-        registrar.add_pending(func, metadata_kwargs)
+        registrar.load_fn(
+            func,
+            typ=typ,
+            name=name,
+            group=group,
+            examples=examples,
+            required_packages=required_packages,
+            aliases=aliases,
+            icon=icon,
+            description=description,
+        )
 
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -134,6 +165,9 @@ def register_tool(
 if __name__ == "__main__":
     import jinja2
 
+    from toolreg.registry import example, registry, tool
+
+    # Example using decorator
     @register_tool(
         typ="filter",
         group="text",
@@ -157,29 +191,24 @@ if __name__ == "__main__":
         """
         return value.upper()
 
-    # Test with a class method and static method
-    class TestClass:
-        @classmethod
-        @register_tool(typ="filter", group="test")
-        def class_method(cls, value: str) -> str:
-            """Test class method."""
-            return value
+    # Example using direct registration
+    def lowercase(value: str) -> str:
+        """Convert string to lowercase."""
+        return value.lower()
 
-        @staticmethod
-        @register_tool(typ="filter", group="test")
-        def static_method(value: str) -> str:
-            """Test static method."""
-            return value
+    registrar = ToolRegistrar()
+    registrar.load_fn(
+        lowercase,
+        typ="filter",
+        group="text",
+        icon="mdi:format-letter-case-lower",
+    )
 
-    # Process all pending registrations
-    ToolRegistrar().process_pending()
-
-    # Environment integration
+    # Test with Environment
     class Environment(jinja2.Environment):
         def __init__(self, *args: Any, **kwargs: Any) -> None:
             super().__init__(*args, **kwargs)
 
-            # Load all registered filters
             reg = registry.ToolRegistry()
             for name, (func, _metadata) in reg.get_all(typ="filter").items():
                 self.filters[name] = func
