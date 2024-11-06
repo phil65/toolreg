@@ -223,6 +223,7 @@ def format_signature(
         eval_str: Un-stringize annotations using eval
         remove_jinja_arg: If true, remove the first argument for pass_xyz decorated fns.
     """
+    # fallback to non-eval on error
     if eval_str:
         try:
             sig = inspect.signature(fn, follow_wrapped=follow_wrapped, eval_str=True)
@@ -235,6 +236,11 @@ def format_signature(
         params = dict(sig._parameters)  # type: ignore[attr-defined]
         params.pop(next(iter(params)))
         sig._parameters = params  # type: ignore[attr-defined]
+        # params = dict(sig.parameters)  # Use .parameters instead of ._parameters
+        # if remove_jinja_arg and hasattr(fn, "jinja_pass_arg"):
+        #     params.pop(next(iter(params)))
+        #     sig = sig.replace(parameters=list(params.values()))
+        # return str(sig)
     return str(sig)
 
 
