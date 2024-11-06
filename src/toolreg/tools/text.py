@@ -330,6 +330,28 @@ def dirname_to_title(dirname: str | os.PathLike[str]) -> str:
 
 @register_tool(
     typ="filter",
+    group="text",
+    icon="mdi:text",
+    examples=[
+        Example(title="basic", template="""{{ "<[]>" | escape }}"""),
+        Example(title="with_quotes", template="""{{ '"double" quotes' | escape }}"""),
+    ],
+    required_packages=["markupsafe"],
+    aliases=["e"],
+)
+def escape(text: str) -> str:
+    """Escape text using Markupsafe library.
+
+    Args:
+        text: text to escape
+    """
+    import markupsafe
+
+    return markupsafe.escape(text)
+
+
+@register_tool(
+    typ="filter",
     group="time",
     icon="mdi:clock",
     examples=[
