@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Literal
 
 
 type FilterFunc = Callable[..., Any]
-ItemType = Literal["filter", "test", "function"]
+type ItemType = Literal["filter", "test", "function"]
 
 
 if TYPE_CHECKING:

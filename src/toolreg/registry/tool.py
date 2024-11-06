@@ -5,14 +5,14 @@ from typing import TYPE_CHECKING, Any, Self
 from pydantic import BaseModel, Field
 
 from toolreg.dissect import inspect_function
-from toolreg.registry import example
+from toolreg.registry import example, registry
 from toolreg.utils import resolve, slugfield
 
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from toolreg.registry.registry import FilterFunc, ItemType
+    from toolreg.registry.registry import FilterFunc
 
 
 class Tool(BaseModel):
@@ -20,7 +20,7 @@ class Tool(BaseModel):
 
     name: slugfield.Slug
     """ame of the jinja item"""
-    typ: ItemType
+    typ: registry.ItemType
     """type of the item (filter, test, or function)"""
     import_path: str
     """mport path in the format "package.module.function"""
@@ -42,7 +42,7 @@ class Tool(BaseModel):
         cls,
         func: FilterFunc,
         *,
-        typ: ItemType,
+        typ: registry.ItemType,
         name: str | None = None,
         group: str | None = None,
         examples: example.ExampleList | None = None,
@@ -134,3 +134,12 @@ class Tool(BaseModel):
             kwargs: They keyword arguments for the call
         """
         return self.filter_fn(*args, **kwargs)
+
+
+if __name__ == "__main__":
+    t = Tool(
+        name="something",
+        typ="filter",
+        import_path="importlib.import_module",
+        description="description",
+    )
