@@ -34,8 +34,8 @@ class DocStringStyler:
         current_style: StyleType = "google",
         example_formatter: ExampleFormatter | None = None,
     ) -> None:
-        self._current_style = str(current_style).lower()
-        self._example_formatter = example_formatter or (lambda x: x)
+        self._current_style: StyleType = str(current_style).lower()
+        self._example_formatter: ExampleFormatter = example_formatter or (lambda x: x)
 
     def format_example(self, example: str) -> str:
         """Format an example string using the configured formatter.

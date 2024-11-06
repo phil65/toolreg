@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import base64
-from collections.abc import Callable
 import functools
 import json
 import logging
@@ -19,7 +18,7 @@ from toolreg.registry.register_tool import register_tool
 
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Callable, Mapping
 
 logger = logging.getLogger(__name__)
 

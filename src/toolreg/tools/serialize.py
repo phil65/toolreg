@@ -5,12 +5,16 @@ from __future__ import annotations
 import configparser
 import io
 import json
-from typing import Any, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 from jinjarope import deepmerge
 
 from toolreg.registry.example import Example
 from toolreg.registry.register_tool import register_tool
+
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 SerializeFormatStr = Literal["yaml", "json", "ini", "toml"]

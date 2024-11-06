@@ -373,7 +373,10 @@ def natsort(
     examples=[
         Example(
             title="basic",
-            template="""{{ ["20", "20", "100", "0"] | groupby_plus(natural_sort=True) }}""",
+            template=(
+                """{{ ["20", "20", "100", "0"] | """
+                """groupby_plus(natural_sort=True) }}"""
+            ),
         )
     ],
 )
@@ -422,7 +425,10 @@ def groupby(
     examples=[
         Example(
             title="basic",
-            template="""{{ ["apple", "banana", "cherry", "avocado"] | groupby_first_letter }}""",
+            template=(
+                """{{ ["apple", "banana", "cherry", "avocado"] | """
+                """groupby_first_letter }}"""
+            ),
         )
     ],
 )

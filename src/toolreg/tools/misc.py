@@ -29,7 +29,10 @@ logger = logging.getLogger(__name__)
     examples=[
         Example(
             title="basic",
-            template="""{{ "github://phil65:mknodes@main/docs/icons.jinja" | load_file }}""",
+            template=(
+                """{{ "github://phil65:mknodes@main/docs/icons.jinja" | """
+                """load_file }}"""
+            ),
         )
     ],
 )
