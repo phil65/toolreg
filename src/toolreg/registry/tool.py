@@ -1,12 +1,18 @@
-from collections.abc import Callable
-from typing import Any, Self
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Self
 
 from pydantic import BaseModel, Field
 
 from toolreg.dissect import inspect_function
 from toolreg.registry import example
-from toolreg.registry.registry import FilterFunc, ItemType
 from toolreg.utils import resolve, slugfield
+
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from toolreg.registry.registry import FilterFunc, ItemType
 
 
 class Tool(BaseModel):
