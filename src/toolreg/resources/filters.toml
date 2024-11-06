@@ -10,17 +10,6 @@ template = """
 {{ "A" | repr }}
 """
 
-[filters.get_directory_tree]
-fn = "toolreg.filetree.get_directory_tree"
-group = "path"
-icon = "mdi:file-tree-outline"
-
-[filters.get_directory_tree.examples.basic]
-markdown = true
-template = """
-{{ "." | get_directory_tree(allowed_extensions=[".py", ".md"]) }}
-"""
-
 [filters.pformat]
 fn = "pprint.pformat"
 group = "format"
@@ -29,102 +18,6 @@ icon = "mdi:format-align-left"
 [filters.pformat.examples.basic]
 template = """
 {{ ([1, 2, 3] * 10) | pformat }}
-"""
-
-[filters.split_url]
-fn = "toolreg.tools.html.split_url"
-group = "format"
-icon = "mdi:link-variant"
-
-[filters.split_url.examples.basic]
-template = """
-{{ "scheme://netloc/path;parameters?query#fragment" | split_url }}
-{{ "scheme://netloc/path;parameters?query#fragment" | split_url("path") }}
-"""
-
-[filters.format_xml.examples.basic]
-template = """
-{{ '<a><b><c>Hello!</c></b></a>' | format_xml }}
-"""
-
-[filters.format_xml.examples.with_declaration]
-template = """
-{{ '<a><b><c>Hello!</c></b></a>' | format_xml(indent=4) }}
-"""
-
-[filters.format_xml.examples.short_form]
-template = """
-{{ '<br></br>' | format_xml(short_empty_elements=True, method="xml") }}
-"""
-
-[filters.format_xml.examples.declaration]
-template = """
-{{ '<br></br>' | format_xml(short_empty_elements=True, add_declaration=True, method="xml") }}
-"""
-
-[filters.ansi2html]
-fn = "toolreg.tools.html.ansi2html"
-group = "html"
-icon = "mdi:console"
-
-[filters.ansi2html.examples.basic]
-template = """
-{{ "\\033[31;1;4mHello\\033[0m" | ansi2html }}
-"""
-
-[filters.relative_url]
-fn = "toolreg.tools.html.relative_url"
-group = "html"
-icon = "mdi:link-relative"
-
-[filters.relative_url.examples.basic]
-template = """
-{{ "https://phil65.github.io" | relative_url("https://phil65.github.io/mknodes") }}
-"""
-
-[filters.relative_url_mkdocs]
-fn = "toolreg.tools.html.relative_url_mkdocs"
-group = "html"
-icon = "mdi:link-relative"
-
-[filters.relative_url_mkdocs.examples.basic]
-template = """
-{{ "https://phil65.github.io" | relative_url_mkdocs("https://phil65.github.io/mknodes") }}
-"""
-
-[filters.normalize_url]
-fn = "toolreg.tools.html.normalize_url"
-group = "html"
-icon = "mdi:link-variant"
-
-[filters.normalize_url.examples.basic]
-template = """
-{{ "test" | normalize_url(base="https://phil65.github.io") }}
-"""
-
-[filters.url_to_b64]
-fn = "toolreg.tools.html.url_to_b64"
-group = "html"
-icon = "mdi:base64"
-
-[filters.url_to_b64.examples.basic]
-template = """
-{{ "https://picsum.photos/100/100" | url_to_b64 }}
-"""
-
-
-[filters.inject_javascript]
-fn = "toolreg.tools.html.inject_javascript"
-group = "html"
-icon = "mdi:source-code"
-
-[filters.inject_javascript.examples.basic]
-template = """
-{{ "<body>some HTML</body>" | inject_javascript("var number = 1;") }}
-"""
-[filters.inject_javascript.examples.with_position]
-template = """
-{{ "<head>HEAD</head><body>some HTML</body>" | inject_javascript("var number = 1;", position="head") }}
 """
 
 [filters.combinations]
@@ -207,51 +100,6 @@ template = """
 {{ "[abc]\nb=1" | load_toml }}
 """
 
-[filters.serialize]
-fn = "toolreg.tools.serialize"
-group = "serialize"
-icon = "mdi:file-export"
-
-[filters.serialize.examples.basic]
-template = """
-{{ {"a": "b"} | serialize("toml") }}
-"""
-
-[filters.deserialize]
-fn = "toolreg.tools.deserialize"
-group = "serialize"
-icon = "mdi:file-import"
-
-[filters.deserialize.examples.basic]
-template = """
-{{ "[abc.def]\nvalue = 1" | deserialize("toml") }}
-"""
-
-[filters.dig]
-fn = "toolreg.tools.dig"
-group = "serialize"
-icon = "mdi:shovel"
-
-[filters.dig.examples.basic]
-template = """
-{{ {"section1": {"section2": {"section3": "Hello, World"} } } | dig("section1", "section2") }}
-"""
-
-[filters.dig.examples.keep_path]
-template = """
-{{ {"section1": {"section2": {"section3": "Hello, World"} } } | dig("section1", "section2", keep_path=True) }}
-"""
-
-[filters.merge]
-fn = "toolreg.tools.merge"
-group = "serialize"
-icon = "mdi:merge"
-
-[filters.merge.examples.basic]
-template = """
-{{ {"a": {"b": 1} } | merge({"a": {"c": 2} }) }}
-"""
-
 # Misc
 
 [filters.add]
@@ -327,36 +175,6 @@ icon = "mdi:file"
 [filters.load_file.examples.basic]
 template = """
 {{ "github://phil65:mknodes@main/docs/icons.jinja" | load_file }}
-"""
-
-[filters.get_doc]
-fn = "toolreg.tools.inspection.get_doc"
-group = "inspect"
-icon = "mdi:file-document"
-
-[filters.get_doc.examples.basic]
-template = """
-{{ filters.get_doc | get_doc }}
-"""
-
-[filters.get_argspec]
-fn = "toolreg.tools.inspection.get_argspec"
-group = "inspect"
-icon = "mdi:function"
-
-[filters.get_argspec.examples.basic]
-template = """
-{{ filters.get_argspec | get_argspec }}
-"""
-
-[filters.get_annotations]
-fn = "inspect.get_annotations"
-group = "inspect"
-icon = "mdi:annotation"
-
-[filters.get_annotations.examples.basic]
-template = """
-{{ filters.get_annotations | get_annotations }}
 """
 
 [filters.get_hash]
@@ -442,16 +260,6 @@ template = """
 {{ ".*" | glob }}
 """
 
-[filters.check_output]
-fn = "toolreg.tools.misc.get_output_from_call"
-group = "misc"
-icon = "mdi:console"
-
-[filters.check_output.examples.basic]
-template = """
-{{ "dir" | check_output }}
-"""
-
 [filters.getenv]
 fn = "os.getenv"
 group = "misc"
@@ -463,7 +271,7 @@ template = """
 """
 
 [filters.render_template]
-fn = "toolreg.Environment.render_template"
+fn = "jinjarope.Environment.render_template"
 group = "environment"
 icon = "mdi:file-code"
 
@@ -473,7 +281,7 @@ template = """
 """
 
 [filters.render_string]
-fn = "toolreg.Environment.render_string"
+fn = "jinjarope.Environment.render_string"
 group = "environment"
 icon = "mdi:code-string"
 
@@ -483,17 +291,17 @@ template = """
 """
 
 [filters.render_file]
-fn = "toolreg.Environment.render_file"
+fn = "jinjarope.Environment.render_file"
 group = "environment"
 icon = "mdi:file-code"
 
 [filters.render_file.examples.basic]
 template = """
-{{ "https://raw.githubusercontent.com/phil65/toolreg/main/tests/__init__.py" | render_file }}
+{{ "https://raw.githubusercontent.com/phil65/jinjarope/main/tests/__init__.py" | render_file }}
 """
 
 [filters.evaluate]
-fn = "toolreg.Environment.evaluate"
+fn = "jinjarope.Environment.evaluate"
 group = "environment"
 icon = "mdi:calculator"
 
@@ -521,17 +329,6 @@ icon = "mdi:dice-3"
 template = """
 {{ [1, 2, 3] | sample(2) }}
 """
-
-[filters.get_file]
-fn = "toolreg.tools.inspection.get_file"
-group = "inspect"
-icon = "mdi:file-find"
-
-[filters.get_file.examples.basic]
-template = """
-{{ filters.get_file | get_file }}
-"""
-
 
 [filters.get_structure_map]
 fn = "toolreg.codetree.get_structure_map"
