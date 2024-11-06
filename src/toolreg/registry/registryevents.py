@@ -343,6 +343,8 @@ def wrap_function(func: Callable[..., T], events: BaseRegistryEvents) -> Callabl
             args=args,
             kwargs=kwargs,
             start_time=datetime.now(),
+            result=None,
+            error=None,
         )
 
         # Pre-execution
@@ -357,6 +359,7 @@ def wrap_function(func: Callable[..., T], events: BaseRegistryEvents) -> Callabl
                 kwargs=kwargs,
                 start_time=context.start_time,
                 result=result,
+                error=None,
             )
 
             # Calculate duration
@@ -373,6 +376,7 @@ def wrap_function(func: Callable[..., T], events: BaseRegistryEvents) -> Callabl
                 kwargs=kwargs,
                 start_time=context.start_time,
                 error=e,
+                result=None,
             )
 
             end_time = datetime.now()
