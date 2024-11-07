@@ -30,6 +30,7 @@ class TomlLoader(BaseLoader):
         """Initialize the TOML loader."""
         super().__init__(*args, **kwargs)
         self._processed_files: set[str] = set()
+        self.metadata_kwargs = kwargs
 
     def can_load(self, source: str | os.PathLike[str]) -> bool:
         """Check if source is a TOML file or directory containing TOML files."""
@@ -98,9 +99,11 @@ class TomlLoader(BaseLoader):
 
         for name, config in content.items():
             try:
+                # Merge config with metadata_kwargs to override fields
+                merged_config = {**config, **self.metadata_kwargs}
                 metadata = tool.Tool.model_validate({
                     "name": name,
-                    **config,
+                    **merged_config,
                 })
 
                 try:
