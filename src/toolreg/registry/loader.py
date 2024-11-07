@@ -21,9 +21,9 @@ Example TOML structure:
 from __future__ import annotations
 
 import logging
+import tomllib
 from typing import TYPE_CHECKING, Final
 
-import tomli
 from upath import UPath
 
 from toolreg.registry import registry, tool
@@ -140,7 +140,7 @@ class ToolLoader:
             prevent other tools in the same file from being loaded.
         """
         try:
-            content = tomli.loads(path.read_text(encoding="utf-8"))
+            content = tomllib.loads(path.read_text(encoding="utf-8"))
         except Exception as exc:
             msg = f"Failed to load {path}: {exc}"
             raise ToolLoadError(msg) from exc
