@@ -5,8 +5,7 @@ import itertools
 import operator
 from typing import Any, TypeVar
 
-from toolreg.registry.example import Example
-from toolreg.registry.register_tool import register_tool
+from toolreg import Example, register_tool
 
 
 T = TypeVar("T")

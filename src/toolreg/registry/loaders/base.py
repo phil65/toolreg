@@ -35,11 +35,12 @@ class BaseLoader(abc.ABC):
         """
 
     @abc.abstractmethod
-    def load(self, source: str) -> None:
+    def load(self, source: str, *, recursive: bool = True) -> None:
         """Load tools from the given source.
 
         Args:
             source: Path or identifier to load from
+            recursive: If a folder is given, whether to load recursively
 
         Raises:
             LoaderError: If loading fails

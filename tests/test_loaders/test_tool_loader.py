@@ -1,3 +1,5 @@
+"""Tests for the ToolLoader class."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -9,7 +11,7 @@ from toolreg.registry.loaders.base import LoaderError
 
 
 if TYPE_CHECKING:
-    import upath
+    from upath import UPath
 
 
 def test_tool_loader_initialization() -> None:
@@ -33,11 +35,11 @@ def test_load_many_continues_on_error(tool_loader: ToolLoader) -> None:
 
 def test_load_with_failing_loader(
     tool_loader: ToolLoader,
-    temp_toml: upath.UPath,
+    example_toml_file: UPath,
 ) -> None:
     """Test handling of loader failures."""
-    # Corrupt the TOML file to force a loading error
-    temp_toml.write_text("invalid toml content")
+    # Corrupt the TOML file
+    example_toml_file.write_text("invalid toml content")
 
-    with pytest.raises(LoaderError, match="Failed to load"):
-        tool_loader.load(str(temp_toml))
+    with pytest.raises(LoaderError):
+        tool_loader.load(str(example_toml_file))

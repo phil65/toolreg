@@ -6,8 +6,7 @@ import re
 import types
 from typing import TYPE_CHECKING, Literal
 
-from toolreg.registry.example import Example
-from toolreg.registry.register_tool import register_tool
+from toolreg import Example, register_tool
 
 
 if TYPE_CHECKING:

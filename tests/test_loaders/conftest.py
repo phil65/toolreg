@@ -1,4 +1,4 @@
-"""Test fixtures for loader tests."""
+"""Test fixtures and utilities for loader tests."""
 
 from __future__ import annotations
 
@@ -15,15 +15,28 @@ if TYPE_CHECKING:
 
 
 @pytest.fixture
-def temp_toml(tmp_path: UPath) -> UPath:
-    """Create a temporary TOML file for testing."""
-    content = """
-    [tool.example]
-    name = "example_tool"
-    version = "1.0.0"
+def example_toml_content() -> str:
+    """Provide example TOML content for testing."""
+    return """
+    [upper_filter]
+    typ = "filter"
+    import_path = "str.upper"
+    group = "text"
+    description = "Convert string to uppercase"
+
+    [lower_filter]
+    typ = "filter"
+    import_path = "str.lower"
+    group = "text"
+    description = "Convert string to lowercase"
     """
-    path = tmp_path / "test.toml"
-    path.write_text(content)
+
+
+@pytest.fixture
+def example_toml_file(tmp_path: UPath, example_toml_content: str) -> UPath:
+    """Create a temporary TOML file with example content."""
+    path = tmp_path / "tools.toml"
+    path.write_text(example_toml_content)
     return path
 
 
@@ -43,6 +56,7 @@ class MockLoader(BaseLoader):
         super().__init__()
         self.load_called = False
         self.can_load_called = False
+        self.last_source = ""
 
     def can_load(self, source: str) -> bool:
         """Record call and always return True."""
@@ -50,7 +64,7 @@ class MockLoader(BaseLoader):
         self.last_source = source
         return True
 
-    def load(self, source: str) -> None:
+    def load(self, source: str, *, recursive: bool = True) -> None:
         """Record call."""
         self.load_called = True
         self.last_source = source

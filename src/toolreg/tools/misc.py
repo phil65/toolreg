@@ -9,8 +9,7 @@ from typing import TYPE_CHECKING, Any
 
 import upath
 
-from toolreg.registry.example import Example
-from toolreg.registry.register_tool import register_tool
+from toolreg import Example, register_tool
 from toolreg.utils import decorators as dec
 
 
@@ -213,6 +212,31 @@ def now(tz: datetime.tzinfo | None = None) -> datetime.datetime:
 def utcnow() -> datetime.datetime:
     """Get UTC datetime."""
     return datetime.datetime.now(datetime.UTC)
+
+
+@register_tool(
+    typ="filter",
+    group="path",
+    icon="mdi:file",
+    examples=[
+        Example(title="basic", template="""{{ "filename.zip" | guess_mime_type }}""")
+    ],
+)
+def guess_mime_type(path: str | os.PathLike[str]) -> str:
+    """Guess the MIME type of given file.
+
+    Args:
+        path: The path to the file.
+
+    Returns:
+        The MIME type of the file.
+    """
+    import mimetypes
+
+    if upath.UPath(path).suffix == ".gz":
+        return "application/gzip"
+    guess, _ = mimetypes.guess_type(path)
+    return guess or "application/octet-stream"
 
 
 ENV_GLOBALS: dict[str, Callable[..., Any]] = {

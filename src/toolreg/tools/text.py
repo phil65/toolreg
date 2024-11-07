@@ -11,8 +11,7 @@ from typing import TYPE_CHECKING, Any
 
 from jinjarope import utils
 
-from toolreg.registry.example import Example
-from toolreg.registry.register_tool import register_tool
+from toolreg import Example, register_tool
 
 
 if TYPE_CHECKING:

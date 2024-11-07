@@ -14,16 +14,18 @@ if TYPE_CHECKING:
     from upath import UPath
 
 
-def test_can_load_valid_toml(temp_toml: UPath) -> None:
+def test_can_load_valid_toml(example_toml_file: UPath) -> None:
     """Test can_load with valid TOML file."""
     loader = TomlLoader()
-    assert loader.can_load(str(temp_toml))
+    assert loader.can_load(str(example_toml_file))
 
 
-def test_can_load_invalid_file() -> None:
+def test_can_load_invalid_file(tmp_path: UPath) -> None:
     """Test can_load with non-TOML file."""
+    invalid_file = tmp_path / "not_a_toml_file.txt"
+    invalid_file.touch()
     loader = TomlLoader()
-    assert not loader.can_load("not_a_toml_file.txt")
+    assert not loader.can_load(str(invalid_file))
 
 
 def test_load_invalid_toml(tmp_path: UPath) -> None:
@@ -36,26 +38,16 @@ def test_load_invalid_toml(tmp_path: UPath) -> None:
         loader.load(str(invalid_toml))
 
 
-def test_load_same_file_twice(tmp_path):
+def test_load_same_file_twice(example_toml_file: UPath) -> None:
     """Test loading the same file twice only processes it once."""
-    toml_content = """
-    [test_tool]
-    type = "filter"
-    import_path = "str.upper"
-    description = "Test tool"
-    """
-
-    toml_file = tmp_path / "test.toml"
-    toml_file.write_text(toml_content)
-
     loader = TomlLoader()
 
     # First load
-    loader.load(toml_file)
+    loader.load(str(example_toml_file))
     initial_count = len(loader._registry._items)
 
     # Second load
-    loader.load(toml_file)
+    loader.load(str(example_toml_file))
     final_count = len(loader._registry._items)
 
-    assert final_count == initial_count, "Tool should not be registered twice"
+    assert final_count == initial_count, "Tools should not be registered twice"

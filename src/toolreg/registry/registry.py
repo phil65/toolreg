@@ -49,7 +49,7 @@ class ToolRegistry:
 
 if __name__ == "__main__":
     # Example 1: Basic filter with docstring-based metadata
-    from toolreg.registry.register_tool import register_tool
+    from toolreg import register_tool
 
     @register_tool(typ="filter", group="text")
     def uppercase(value: str) -> str:

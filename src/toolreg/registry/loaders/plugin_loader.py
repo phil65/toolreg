@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib
+from typing import Any
 
 from toolreg.registry.loaders.base import BaseLoader, LoaderError
 
@@ -18,7 +19,7 @@ class PluginLoader(BaseLoader):
         except ImportError:
             return False
 
-    def load(self, source: str) -> None:
+    def load(self, source: str, **kwargs: Any) -> None:
         """Load tools from a plugin module."""
         if self.is_loaded(source):
             msg = f"Plugin {source} already loaded"

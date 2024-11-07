@@ -5,8 +5,7 @@ from typing import TYPE_CHECKING, Final, Literal, TypedDict
 
 import upath
 
-from toolreg.registry.example import Example
-from toolreg.registry.register_tool import register_tool
+from toolreg import Example, register_tool
 from toolreg.utils import icons
 
 

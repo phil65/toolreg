@@ -4,8 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from toolreg.registry.example import Example
-from toolreg.registry.register_tool import register_tool
+from toolreg import Example, register_tool
 
 
 @register_tool(

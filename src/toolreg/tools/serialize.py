@@ -9,8 +9,7 @@ from typing import TYPE_CHECKING, Any, Literal
 
 from jinjarope import deepmerge
 
-from toolreg.registry.example import Example
-from toolreg.registry.register_tool import register_tool
+from toolreg import Example, register_tool
 
 
 if TYPE_CHECKING:

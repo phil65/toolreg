@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib
 import importlib.util
+from typing import Any
 
 from toolreg.registry.loaders.base import BaseLoader, LoaderError
 
@@ -21,7 +22,7 @@ class ModuleLoader(BaseLoader):
         except ModuleNotFoundError:
             return False
 
-    def load(self, source: str) -> None:
+    def load(self, source: str, **kwargs: Any) -> None:
         """Load tools from a Python module."""
         if self.is_loaded(source):
             return

@@ -13,8 +13,7 @@ from xml.etree import ElementTree as ET
 
 import requests
 
-from toolreg.registry.example import Example
-from toolreg.registry.register_tool import register_tool
+from toolreg import Example, register_tool
 
 
 if TYPE_CHECKING:
