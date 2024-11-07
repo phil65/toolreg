@@ -4,27 +4,20 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, Literal
 
 
-type FilterFunc = Callable[..., Any]
-type ItemType = Literal["filter", "test", "function"]
-
-
 if TYPE_CHECKING:
     from toolreg.registry import tool
 
 
+type FilterFunc = Callable[..., Any]
+type ItemType = Literal["filter", "test", "function"]
+
+
 class ToolRegistry:
-    """Singleton registry for jinja items."""
+    """Registry for jinja items."""
 
-    _instance: ToolRegistry | None = None
-
-    def __new__(cls) -> ToolRegistry:  # noqa: PYI034
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
-
-    def __init__(self):
-        if not hasattr(self, "_items"):
-            self._items: dict[str, tuple[FilterFunc, tool.Tool]] = {}
+    def __init__(self) -> None:
+        """Initialize an empty registry."""
+        self._items: dict[str, tuple[FilterFunc, tool.Tool]] = {}
 
     def register(self, func: FilterFunc, metadata: tool.Tool) -> None:
         """Register a new item with metadata."""

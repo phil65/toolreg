@@ -31,7 +31,11 @@ def is_tool(obj: Any) -> bool:
     Returns:
         True if object appears to be a tool
     """
-    return callable(obj) and not obj.__name__.startswith("_") and inspect.isfunction(obj)
+    is_callable = callable(obj)
+    is_private = obj.__name__.startswith("_") if hasattr(obj, "__name__") else True
+    is_func = inspect.isfunction(obj)
+
+    return is_callable and not is_private and (is_func or hasattr(obj, "__wrapped__"))
 
 
 def iter_tools(module: Any) -> Iterator[tuple[str, Tool]]:

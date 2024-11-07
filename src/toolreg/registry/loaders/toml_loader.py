@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import tomllib
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, Any, ClassVar
 
 from upath import UPath
 
@@ -26,9 +26,9 @@ class TomlLoader(BaseLoader):
     name = "toml"
     VALID_EXTENSIONS: ClassVar[set[str]] = {".toml"}
 
-    def __init__(self) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize the TOML loader."""
-        super().__init__()
+        super().__init__(*args, **kwargs)
         self._processed_files: set[str] = set()
 
     def can_load(self, source: str | os.PathLike[str]) -> bool:

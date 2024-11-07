@@ -8,6 +8,7 @@ import pytest
 
 from toolreg.registry.loaders import ToolLoader
 from toolreg.registry.loaders.base import BaseLoader
+from toolreg.registry.registration import _registrar
 
 
 if TYPE_CHECKING:
@@ -43,7 +44,7 @@ def example_toml_file(tmp_path: UPath, example_toml_content: str) -> UPath:
 @pytest.fixture
 def tool_loader() -> ToolLoader:
     """Provide a fresh ToolLoader instance."""
-    return ToolLoader()
+    return ToolLoader(_registrar.registry)
 
 
 class MockLoader(BaseLoader):

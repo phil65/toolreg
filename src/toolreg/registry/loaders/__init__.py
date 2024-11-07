@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 from typing import ClassVar
 
+from toolreg.registry import registry
 from toolreg.registry.loaders.base import BaseLoader, LoaderError
 from toolreg.registry.loaders.module_loader import ModuleLoader
 from toolreg.registry.loaders.plugin_loader import PluginLoader
@@ -23,22 +24,19 @@ class ToolLoader:
         "plugin": PluginLoader,
     }
 
-    def __init__(self) -> None:
-        """Initialize the tool loader."""
+    def __init__(self, registry_instance: registry.ToolRegistry | None = None) -> None:
+        """Initialize the tool loader.
+
+        Args:
+            registry_instance: The registry to register tools in
+        """
+        reg = registry_instance or registry.ToolRegistry()
         self._active_loaders: dict[str, BaseLoader] = {
-            name: loader_cls() for name, loader_cls in self._loaders.items()
+            name: loader_cls(reg) for name, loader_cls in self._loaders.items()
         }
 
     def load(self, source: str, *, recursive: bool = True) -> None:
-        """Load tools from the given source.
-
-        Args:
-            source: Path or identifier to load from
-            recursive: For directory sources, whether to search recursively
-
-        Raises:
-            LoaderError: If no suitable loader is found or loading fails
-        """
+        """Load tools from the given source."""
         for loader in self._active_loaders.values():
             if loader.can_load(source):
                 try:
@@ -53,12 +51,7 @@ class ToolLoader:
         raise LoaderError(msg)
 
     def load_many(self, sources: list[str], *, recursive: bool = True) -> None:
-        """Load tools from multiple sources.
-
-        Args:
-            sources: List of paths or identifiers to load from
-            recursive: For directory sources, whether to search recursively
-        """
+        """Load tools from multiple sources."""
         for source in sources:
             try:
                 self.load(source, recursive=recursive)

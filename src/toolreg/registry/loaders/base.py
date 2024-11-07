@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import ClassVar
 
 from toolreg.registry import registry
 
@@ -15,54 +14,32 @@ logger = logging.getLogger(__name__)
 class BaseLoader(abc.ABC):
     """Abstract base class for all tool loaders."""
 
-    name: ClassVar[str]
+    name: str
     """Identifier for the loader type"""
 
-    def __init__(self) -> None:
-        """Initialize the loader with a registry reference."""
-        self._registry = registry.ToolRegistry()
+    def __init__(self, registry_instance: registry.ToolRegistry | None = None) -> None:
+        """Initialize the loader with a registry reference.
+
+        Args:
+            registry_instance: The registry to register tools in
+        """
+        self._registry = registry_instance or registry.ToolRegistry()
         self._loaded_items: set[str] = set()
 
     @abc.abstractmethod
     def can_load(self, source: str) -> bool:
-        """Check if this loader can handle the given source.
-
-        Args:
-            source: Path or identifier to check
-
-        Returns:
-            True if this loader can handle the source
-        """
+        """Check if this loader can handle the given source."""
 
     @abc.abstractmethod
     def load(self, source: str, *, recursive: bool = True) -> None:
-        """Load tools from the given source.
-
-        Args:
-            source: Path or identifier to load from
-            recursive: If a folder is given, whether to load recursively
-
-        Raises:
-            LoaderError: If loading fails
-        """
+        """Load tools from the given source."""
 
     def _mark_loaded(self, identifier: str) -> None:
-        """Mark a source as loaded.
-
-        Args:
-            identifier: Unique identifier for the loaded source
-        """
+        """Mark a source as loaded."""
         self._loaded_items.add(identifier)
 
     def is_loaded(self, identifier: str) -> bool:
-        """Check if a source has already been loaded.
-
-        Args:
-            identifier: Source identifier to check
-
-        Returns:
-            True if already loaded
-        """
+        """Check if a source has already been loaded."""
         return identifier in self._loaded_items
 
 

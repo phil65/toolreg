@@ -5,12 +5,12 @@ from __future__ import annotations
 import pytest
 
 from toolreg import register_tool
-from toolreg.registry import example, registry
+from toolreg.registry import example, registration
 
 
 def test_register_tool_decorator():
     """Test registration via decorator."""
-    reg = registry.ToolRegistry()
+    reg = registration._registrar.registry
     initial_count = len(reg.get_all(typ="filter"))
 
     @register_tool(
@@ -42,7 +42,7 @@ def test_register_tool_decorator():
 
 def test_register_tool_with_metadata():
     """Test registration with full metadata."""
-    reg = registry.ToolRegistry()
+    reg = registration._registrar.registry
     initial_count = len(reg.get_all(typ="filter"))
 
     @register_tool(

@@ -1,11 +1,10 @@
-# toolreg/registry/registration.py
 """Core registration functionality."""
 
 from __future__ import annotations
 
 import functools
 import logging
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, Literal, TypeVar
 
 from toolreg.registry import registry, tool
 
@@ -28,14 +27,19 @@ class ToolRegistrar:
     """
 
     def __init__(self) -> None:
-        """Initialize the registrar with a registry instance."""
+        """Initialize the registrar with a new registry instance."""
         self._registry = registry.ToolRegistry()
+
+    @property
+    def registry(self) -> registry.ToolRegistry:
+        """Get the registry instance."""
+        return self._registry
 
     def register(
         self,
         func: Callable[..., Any],
         *,
-        typ: registry.ItemType,
+        typ: Literal["filter", "test", "function"],
         name: str | None = None,
         group: str = "general",
         examples: list[Example] | None = None,
@@ -74,84 +78,85 @@ class ToolRegistrar:
                 description=description,
             )
         except Exception as exc:
-            msg = f"Failed to create metadata for {func.__name__}"
-            logger.exception(msg)
-            raise ValueError(msg) from exc
+            err_msg = f"Failed to create metadata for {func.__name__}"
+            logger.exception(err_msg)
+            raise ValueError(err_msg) from exc
 
         try:
             self._registry.register(func, metadata)
             logger.info("Registered %s as %s", func.__name__, typ)
         except Exception as exc:
-            msg = f"Failed to register {func.__name__}"
-            raise RuntimeError(msg) from exc
+            err_msg = f"Failed to register {func.__name__}"
+            raise RuntimeError(err_msg) from exc
+
+    def register_tool(
+        self,
+        typ: Literal["filter", "test", "function"],
+        *,
+        name: str | None = None,
+        group: str = "general",
+        examples: list[Example] | None = None,
+        required_packages: list[str] | None = None,
+        aliases: list[str] | None = None,
+        icon: str | None = None,
+        description: str | None = None,
+    ) -> Callable[[Callable[..., T]], Callable[..., T]]:
+        """Decorator to register a function as a tool.
+
+        Args:
+            typ: Type of tool (filter, test, function)
+            name: Optional override for function name
+            group: Group/category for the tool
+            examples: List of usage examples
+            required_packages: Required package names
+            aliases: Alternative names for the tool
+            icon: Icon identifier
+            description: Optional override for function description
+
+        Returns:
+            Decorator function that preserves the original function while registering it
+
+        Example:
+            ```python
+            @registrar.register_tool(
+                typ="filter",
+                group="text",
+                examples=[
+                    Example(
+                        template="{{ 'hello' | uppercase }}",
+                        title="Basic Example",
+                    )
+                ],
+                icon="mdi:format-letter-case-upper"
+            )
+            def uppercase(value: str) -> str:
+                '''Convert string to uppercase.'''
+                return value.upper()
+            ```
+        """
+
+        def decorator(func: Callable[..., T]) -> Callable[..., T]:
+            self.register(
+                func,
+                typ=typ,
+                name=name,
+                group=group,
+                examples=examples,
+                required_packages=required_packages,
+                aliases=aliases,
+                icon=icon,
+                description=description,
+            )
+
+            @functools.wraps(func)
+            def wrapper(*args: Any, **kwargs: Any) -> T:
+                return func(*args, **kwargs)
+
+            return wrapper
+
+        return decorator
 
 
-# Global registrar instance
+# Global registrar instance and backward-compatible decorator
 _registrar = ToolRegistrar()
-
-
-def register_tool(
-    typ: registry.ItemType,
-    *,
-    name: str | None = None,
-    group: str = "general",
-    examples: list[Example] | None = None,
-    required_packages: list[str] | None = None,
-    aliases: list[str] | None = None,
-    icon: str | None = None,
-    description: str | None = None,
-) -> Callable[[Callable[..., T]], Callable[..., T]]:
-    """Decorator to register a function as a tool.
-
-    Args:
-        typ: Type of tool (filter, test, function)
-        name: Optional override for function name
-        group: Group/category for the tool
-        examples: List of usage examples
-        required_packages: Required package names
-        aliases: Alternative names for the tool
-        icon: Icon identifier
-        description: Optional override for function description
-
-    Returns:
-        Decorator function that preserves the original function while registering it
-
-    Example:
-        ```python
-        @register_tool(
-            typ="filter",
-            group="text",
-            examples=[
-                Example(
-                    template="{{ 'hello' | uppercase }}",
-                    title="Basic Example",
-                )
-            ],
-            icon="mdi:format-letter-case-upper"
-        )
-        def uppercase(value: str) -> str:
-            '''Convert string to uppercase.'''
-            return value.upper()
-        ```
-    """
-
-    def decorator(func: Callable[..., T]) -> Callable[..., T]:
-        _registrar.register(
-            func,
-            typ=typ,
-            name=name,
-            group=group,
-            examples=examples,
-            required_packages=required_packages,
-            aliases=aliases,
-            icon=icon,
-            description=description,
-        )
-
-        @functools.wraps(func)
-        def wrapper(*args: Any, **kwargs: Any) -> Any:
-            return func(*args, **kwargs)
-
-        return wrapper
-
-    return decorator
+register_tool = _registrar.register_tool
