@@ -36,12 +36,19 @@ class TomlLoader(BaseLoader):
         path = UPath(source)
         return path.is_file() and path.suffix in self.VALID_EXTENSIONS or path.is_dir()
 
-    def load(self, source: str | os.PathLike[str], *, recursive: bool = True) -> None:
+    def load(
+        self,
+        source: str | os.PathLike[str],
+        *,
+        recursive: bool = True,
+        key_path: str | None = None,
+    ) -> None:
         """Load tools from a TOML file or directory.
 
         Args:
             source: Path to TOML file or directory containing TOML files
             recursive: If True, search directories recursively. Defaults to True.
+            key_path: Nested path in the TOML file to load tools from. Defaults to None.
 
         Raises:
             LoaderError: If loading or registration fails
@@ -49,20 +56,21 @@ class TomlLoader(BaseLoader):
         path = UPath(source)
 
         if path.is_file():
-            self._load_file(path)
+            self._load_file(path, key_path=key_path)
         elif path.is_dir():
             pattern = "**/*.toml" if recursive else "*.toml"
             for toml_path in path.glob(pattern):
-                self._load_file(toml_path)
+                self._load_file(toml_path, key_path=key_path)
         else:
             msg = f"Invalid source path: {source}"
             raise LoaderError(msg)
 
-    def _load_file(self, path: UPath) -> None:
+    def _load_file(self, path: UPath, key_path: str | None = None) -> None:
         """Load and process tools from a single TOML file.
 
         Args:
             path: Path to the TOML file
+            key_path: Nested path in the TOML file to load tools from. Defaults to None.
 
         Raises:
             LoaderError: If file parsing or tool registration fails
@@ -79,6 +87,14 @@ class TomlLoader(BaseLoader):
         except Exception as exc:
             msg = f"Failed to parse TOML file {path}"
             raise LoaderError(msg) from exc
+
+        if key_path:
+            keys = key_path.split("/")
+            for key in keys:
+                content = content.get(key, {})
+                if not content:
+                    msg = f"Invalid nested path {key_path} in TOML file {path}"
+                    raise LoaderError(msg)
 
         for name, config in content.items():
             try:
