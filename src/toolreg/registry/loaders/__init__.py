@@ -29,13 +29,12 @@ class ToolLoader:
             name: loader_cls() for name, loader_cls in self._loaders.items()
         }
 
-    def load(self, source: str) -> None:
+    def load(self, source: str, *, recursive: bool = True) -> None:
         """Load tools from the given source.
-
-        This method automatically detects the appropriate loader to use.
 
         Args:
             source: Path or identifier to load from
+            recursive: For directory sources, whether to search recursively
 
         Raises:
             LoaderError: If no suitable loader is found or loading fails
@@ -43,25 +42,25 @@ class ToolLoader:
         for loader in self._active_loaders.values():
             if loader.can_load(source):
                 try:
-                    loader.load(source)
+                    loader.load(source, recursive=recursive)  # type: ignore
                 except Exception as exc:
                     logger.exception("Loader %s failed for %s", loader.name, source)
                     msg = f"Failed to load {source} with {loader.name}"
                     raise LoaderError(msg) from exc
-                else:
-                    return
+                return
 
         msg = f"No suitable loader found for {source}"
         raise LoaderError(msg)
 
-    def load_many(self, sources: list[str]) -> None:
+    def load_many(self, sources: list[str], *, recursive: bool = True) -> None:
         """Load tools from multiple sources.
 
         Args:
             sources: List of paths or identifiers to load from
+            recursive: For directory sources, whether to search recursively
         """
         for source in sources:
             try:
-                self.load(source)
+                self.load(source, recursive=recursive)
             except LoaderError:
                 logger.exception("Failed to load %s", source)
