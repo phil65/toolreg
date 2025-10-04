@@ -32,30 +32,34 @@ classifiers = [
 ]
 keywords = []
 requires-python = ">=3.12"
-dependencies = ["jinja2", "fsspec", "universal_pathlib"]
-license = "MIT"
+license = { file = "LICENSE" }
+dependencies = [
 
-[project.optional-dependencies]
-extras = ["black", "pygments", "humanize", "natsort"]
-llm = ["litellm", "python-dotenv", "pillow"]
-icons = ["pyconify"]
-yaml = ["yamling"]
+    # Only add below (Copier)
+]
 
 [tool.uv]
-dev-dependencies = [
-    # lint
-    "ruff",
-    "mypy[faster-cache]",
-    # test
+default-groups = ["dev", "lint", "docs"]
+
+[dependency-groups]
+dev = [
     "pytest",
     "pytest-cov",
-    "pytest-asyncio",
-    # docs
-    "mkdocs-material",
-    "mkdocs-mknodes",
-    # dev
     "pyreadline3",
-    "pyinstrument",
+    "devtools",
+    # Only add below (Copier)
+]
+benchmark = ["pyinstrument"]
+lint = [
+    "ruff",
+    "mypy[faster-cache]; python_version < '3.14'",
+    "mypy; python_version >= '3.14'",
+    # Only add below (Copier)
+]
+docs = [
+    "mkdocs-mknodes",
+    "mkdocs-material",
+    # Only add below (Copier)
 ]
 
 [project.urls]
