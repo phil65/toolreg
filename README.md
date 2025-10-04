@@ -2,8 +2,6 @@
 
 [![PyPI License](https://img.shields.io/pypi/l/toolreg.svg)](https://pypi.org/project/toolreg/)
 [![Package status](https://img.shields.io/pypi/status/toolreg.svg)](https://pypi.org/project/toolreg/)
-[![Daily downloads](https://img.shields.io/pypi/dd/toolreg.svg)](https://pypi.org/project/toolreg/)
-[![Weekly downloads](https://img.shields.io/pypi/dw/toolreg.svg)](https://pypi.org/project/toolreg/)
 [![Monthly downloads](https://img.shields.io/pypi/dm/toolreg.svg)](https://pypi.org/project/toolreg/)
 [![Distribution format](https://img.shields.io/pypi/format/toolreg.svg)](https://pypi.org/project/toolreg/)
 [![Wheel availability](https://img.shields.io/pypi/wheel/toolreg.svg)](https://pypi.org/project/toolreg/)
@@ -21,12 +19,8 @@
 [![Github last commit](https://img.shields.io/github/last-commit/phil65/toolreg)](https://github.com/phil65/toolreg/commits)
 [![Github release date](https://img.shields.io/github/release-date/phil65/toolreg)](https://github.com/phil65/toolreg/releases)
 [![Github language count](https://img.shields.io/github/languages/count/phil65/toolreg)](https://github.com/phil65/toolreg)
-[![Github commits this week](https://img.shields.io/github/commit-activity/w/phil65/toolreg)](https://github.com/phil65/toolreg)
 [![Github commits this month](https://img.shields.io/github/commit-activity/m/phil65/toolreg)](https://github.com/phil65/toolreg)
-[![Github commits this year](https://img.shields.io/github/commit-activity/y/phil65/toolreg)](https://github.com/phil65/toolreg)
 [![Package status](https://codecov.io/gh/phil65/toolreg/branch/main/graph/badge.svg)](https://codecov.io/gh/phil65/toolreg/)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![PyUp](https://pyup.io/repos/github/phil65/toolreg/shield.svg)](https://pyup.io/repos/github/phil65/toolreg/)
 
 [Read the documentation!](https://phil65.github.io/toolreg/)
-
