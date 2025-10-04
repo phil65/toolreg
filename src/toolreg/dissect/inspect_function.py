@@ -161,7 +161,7 @@ def get_qualified_name(func: Any) -> str:
 if __name__ == "__main__":
     import inspect
 
-    def test(a: int = 0, b: str = "abc"):
+    def test(a: int = 0, b: str = "abc"):  # noqa: PT028
         """Test funcion.
 
         Some text.

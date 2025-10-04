@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from enum import Enum, auto
 import logging
 import re
-from re import Pattern
 import stat
 from typing import TYPE_CHECKING, Any
 
@@ -19,6 +18,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
     import os
     import pathlib
+    from re import Pattern
 
 
 class SortCriteria(Enum):

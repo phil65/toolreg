@@ -3,13 +3,16 @@
 from __future__ import annotations
 
 import logging
-from typing import ClassVar
+from typing import ClassVar, TYPE_CHECKING
 
 from toolreg.registry import registry
-from toolreg.registry.loaders.base import BaseLoader, LoaderError
+from toolreg.registry.loaders.base import LoaderError
 from toolreg.registry.loaders.module_loader import ModuleLoader
 from toolreg.registry.loaders.plugin_loader import PluginLoader
 from toolreg.registry.loaders.toml_loader import TomlLoader
+
+if TYPE_CHECKING:
+    from toolreg.registry.loaders.base import BaseLoader
 
 
 logger = logging.getLogger(__name__)

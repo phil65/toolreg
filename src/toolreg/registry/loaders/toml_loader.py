@@ -35,7 +35,7 @@ class TomlLoader(BaseLoader):
     def can_load(self, source: str | os.PathLike[str]) -> bool:
         """Check if source is a TOML file or directory containing TOML files."""
         path = UPath(source)
-        return path.is_file() and path.suffix in self.VALID_EXTENSIONS or path.is_dir()
+        return (path.is_file() and path.suffix in self.VALID_EXTENSIONS) or path.is_dir()
 
     def load(
         self,

@@ -1,11 +1,15 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Generator, Iterable, Mapping
+from collections.abc import Mapping
 import itertools
 import operator
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from toolreg import Example, register_tool
+
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Generator, Iterable
 
 
 T = TypeVar("T")
@@ -24,7 +28,7 @@ T = TypeVar("T")
         )
     ],
 )
-def pairwise(items: Iterable[T]) -> itertools.pairwise[tuple[T, T]]:
+def pairwise[T](items: Iterable[T]) -> itertools.pairwise[tuple[T, T]]:
     """Return an iterator of overlapping pairs taken from the input iterator.
 
     s -> (s0,s1), (s1,s2), (s2, s3), ...
@@ -48,7 +52,7 @@ def pairwise(items: Iterable[T]) -> itertools.pairwise[tuple[T, T]]:
         )
     ],
 )
-def chain(*iterables: Iterable[T]) -> itertools.chain[T]:
+def chain[T](*iterables: Iterable[T]) -> itertools.chain[T]:
     """Chain all given iterators.
 
     Make an iterator that returns elements from the first iterable until it is
@@ -121,7 +125,7 @@ def product(
         )
     ],
 )
-def repeat(obj: T, times: int | None = None) -> Iterable[T]:
+def repeat[T](obj: T, times: int | None = None) -> Iterable[T]:
     """Make an iterator that returns object over and over again.
 
     Runs indefinitely unless the times argument is specified.
@@ -186,7 +190,7 @@ def zip_longest(*iterables: Iterable[Any], fillvalue: Any = None) -> Iterable[An
         )
     ],
 )
-def islice(iterable: Iterable[T], *args: int | None) -> itertools.islice[T]:
+def islice[T](iterable: Iterable[T], *args: int | None) -> itertools.islice[T]:
     """Make an iterator that returns selected elements from the iterable.
 
     If start is non-zero, then elements from the iterable are skipped until start
@@ -232,7 +236,7 @@ def islice(iterable: Iterable[T], *args: int | None) -> itertools.islice[T]:
         )
     ],
 )
-def do_zip(*items: Iterable[T]) -> zip[tuple[T, ...]]:
+def do_zip[T](*items: Iterable[T]) -> zip[tuple[T, ...]]:
     """Zip iterables into a single one.
 
     Args:
@@ -252,7 +256,7 @@ def do_zip(*items: Iterable[T]) -> zip[tuple[T, ...]]:
         )
     ],
 )
-def reduce_list(items: Iterable[T]) -> list[T]:
+def reduce_list[T](items: Iterable[T]) -> list[T]:
     """Reduce duplicate items in a list and preserve order.
 
     Args:
@@ -306,7 +310,7 @@ def flatten_dict(dct: Mapping, sep: str = "/", _parent_key: str = "") -> Mapping
         )
     ],
 )
-def batched(iterable: Iterable[T], n: int) -> Generator[tuple[T, ...], None, None]:
+def batched[T](iterable: Iterable[T], n: int) -> Generator[tuple[T, ...], None, None]:
     """Batch data into tuples of length n. The last batch may be shorter.
 
     Note: this function was added to Py3.12 itertools
@@ -431,7 +435,7 @@ def groupby(
         )
     ],
 )
-def groupby_first_letter(
+def groupby_first_letter[T](
     data: Iterable[T],
     keyfunc: Callable[..., Any] | None = None,
 ) -> dict[str, list[T]]:

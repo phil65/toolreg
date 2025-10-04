@@ -82,7 +82,7 @@ def test_register_tool_with_metadata():
 
 def test_register_tool_validation():
     """Test validation during registration."""
-    with pytest.raises(ValueError, match="Failed to create*"):
+    with pytest.raises(ValueError, match=r"Failed to create*"):
 
         @register_tool(typ="invalid_type")  # type: ignore
         def test_func():

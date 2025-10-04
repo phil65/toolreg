@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Annotated, Any
 
-from pydantic import GetCoreSchemaHandler
 from pydantic_core.core_schema import str_schema
 
 
 if TYPE_CHECKING:
+    from pydantic import GetCoreSchemaHandler
     from pydantic.json_schema import JsonSchemaValue
     from pydantic_core import CoreSchema
 

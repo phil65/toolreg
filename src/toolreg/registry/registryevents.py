@@ -299,7 +299,9 @@ class CompositeEvents(BaseRegistryEvents):
             handler.on_error(error, context)
 
 
-def wrap_function(func: Callable[..., T], events: BaseRegistryEvents) -> Callable[..., T]:
+def wrap_function[T](
+    func: Callable[..., T], events: BaseRegistryEvents
+) -> Callable[..., T]:
     """Wrap a function with event handling.
 
     Creates a wrapper that tracks execution metrics and triggers event handlers.
