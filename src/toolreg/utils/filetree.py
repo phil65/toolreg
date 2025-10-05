@@ -49,7 +49,7 @@ class TreeOptions:
     date_format: str = "%Y-%m-%d %H:%M:%S"
 
 
-def _get_path_info(path: pathlib.Path) -> dict[str, Any]:
+def _get_path_info(path: pathlib.Path | upath.UPath) -> dict[str, Any]:
     """Get all relevant information about a path.
 
     Args:
@@ -101,7 +101,7 @@ class DirectoryTree:
         self.root_path = upath.UPath(root_path)
         self.options = options or TreeOptions()
 
-    def _get_sort_key(self, path: pathlib.Path) -> tuple[bool, Any]:
+    def _get_sort_key(self, path: pathlib.Path | upath.UPath) -> tuple[bool, Any]:
         """Generate sort key based on current sort criteria.
 
         Args:
@@ -121,7 +121,7 @@ class DirectoryTree:
         # Always sort directories first within each category
         return not path.is_dir(), criteria_keys[self.options.sort_criteria]()
 
-    def _should_include(self, path: pathlib.Path) -> bool:
+    def _should_include(self, path: pathlib.Path | upath.UPath) -> bool:
         """Check if path should be included based on filters.
 
         Args:
@@ -151,7 +151,7 @@ class DirectoryTree:
 
     def _is_directory_empty_after_filters(
         self,
-        directory: pathlib.Path,
+        directory: pathlib.Path | upath.UPath,
         depth: int = 0,
     ) -> bool:
         """Recursively check if directory is empty after applying all filters.
@@ -193,8 +193,8 @@ class DirectoryTree:
             return True
 
     def _get_tree_entries(
-        self, directory: pathlib.Path, prefix: str = "", depth: int = 0
-    ) -> list[tuple[str, pathlib.Path, bool]]:
+        self, directory: pathlib.Path | upath.UPath, prefix: str = "", depth: int = 0
+    ) -> list[tuple[str, pathlib.Path | upath.UPath, bool]]:
         """Generate tree entries with proper formatting.
 
         Args:
@@ -206,15 +206,16 @@ class DirectoryTree:
             List of tuples containing prefix, path and boolean indicating if it's
             the last entry.
         """
-        entries: list[tuple[str, pathlib.Path, bool]] = []
+        entries: list[tuple[str, pathlib.Path | upath.UPath, bool]] = []
 
         if self.options.max_depth is not None and depth > self.options.max_depth:
             return entries
 
         try:
             # Get all paths and apply sorting
+            dirs = directory.iterdir()
             paths = sorted(
-                directory.iterdir(),
+                dirs,
                 key=self._get_sort_key,
                 reverse=self.options.reverse_sort,
             )
@@ -223,7 +224,7 @@ class DirectoryTree:
             return entries
 
         # Filter paths and check if they're empty (if directories)
-        visible_paths: list[pathlib.Path] = []
+        visible_paths: list[pathlib.Path | upath.UPath] = []
         for path in paths:
             if not self._should_include(path):
                 continue

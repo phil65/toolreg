@@ -1,0 +1,492 @@
+# This file contains definitions of the toolreg tests as well as std library tests.
+
+[tests.number]
+fn = "toolreg.tools.tests.is_number"
+group = "type"
+[tests.number.examples.basic]
+template = """
+{% if 5 is number %}
+True!
+{% endif %}
+"""
+
+[tests.list]
+fn = "toolreg.tools.tests._is_list"
+group = "type"
+[tests.list.examples.basic]
+template = """
+{% if [] is list %}
+True!
+{% endif %}
+"""
+
+[tests.set]
+fn = "toolreg.tools.tests._is_set"
+group = "type"
+[tests.set.examples.basic]
+template = """
+{% if [] is set %}
+True!
+{% endif %}
+"""
+
+[tests.tuple]
+fn = "toolreg.tools.tests._is_tuple"
+group = "type"
+[tests.tuple.examples.basic]
+template = """
+{% if () is tuple %}
+True!
+{% endif %}
+"""
+
+[tests.dict]
+fn = "toolreg.tools.tests._is_dict"
+group = "type"
+[tests.dict.examples.basic]
+template = """
+{% if {"a": "b"} is dict %}
+True!
+{% endif %}
+"""
+
+[tests.type]
+fn = "toolreg.tools.tests._is_type"
+group = "type"
+[tests.type.examples.basic]
+template = """
+{% if zip is type %}
+True!
+{% endif %}
+"""
+
+[tests.datetime]
+fn = "toolreg.tools.tests._is_datetime"
+group = "type"
+[tests.datetime.examples.basic]
+template = """
+{% if "a" is datetime %}
+True!
+{% endif %}
+"""
+
+[tests.string_like]
+fn = "toolreg.tools.tests._is_string_like"
+group = "type"
+[tests.string_like.examples.basic]
+template = """
+{% if "abc" is string_like %}
+True!
+{% endif %}
+"""
+
+[tests.subclass]
+fn = "toolreg.tools.tests.is_subclass"
+group = "type"
+[tests.subclass.examples.basic]
+template = """
+{% if cycler is subclass("dict") %}
+True!
+{% endif %}
+"""
+
+[tests.instance]
+fn = "toolreg.tools.tests.is_instance"
+group = "type"
+[tests.instance.examples.basic]
+template = """
+{% if {"a": "b"} is instance("dict") %}
+True!
+{% endif %}
+"""
+
+[tests.http_url]
+fn = "toolreg.tools.tests.is_http_url"
+group = "url"
+[tests.http_url.examples.basic]
+template = """
+{% if "http://some.url" is http_url %}
+True!
+{% endif %}
+"""
+
+[tests.fsspec_url]
+fn = "toolreg.tools.tests.is_fsspec_url"
+group = "url"
+[tests.fsspec_url.examples.basic]
+template = """
+{% if "github://some.path" is fsspec_url %}
+True!
+{% endif %}
+"""
+
+[tests.url]
+fn = "toolreg.tools.tests.is_protocol_url"
+group = "url"
+[tests.url.examples.basic]
+template = """
+{% if "abc://" is url %}
+True!
+{% endif %}
+"""
+
+[tests.folder_with_files]
+fn = "toolreg.tools.tests.contains_files"
+group = "file"
+[tests.folder_with_files.examples.basic]
+template = """
+{% if "./src" is folder_with_files %}
+True!
+{% endif %}
+"""
+
+[tests.python_keyword]
+fn = "toolreg.tools.tests.is_python_keyword"
+group = "python"
+[tests.python_keyword.examples.basic]
+template = """
+{% if "for" is python_keyword %}
+True!
+{% endif %}
+"""
+
+[tests.python_builtin]
+fn = "toolreg.tools.tests.is_python_builtin"
+group = "python"
+[tests.python_builtin.examples.basic]
+template = """
+{% if "repr" is python_builtin %}
+True!
+{% endif %}
+"""
+
+[tests.in_std_library]
+fn = "toolreg.tools.tests.is_in_std_library"
+group = "python"
+[tests.in_std_library.examples.basic]
+template = """
+{% if "inspect.getsource" is in_std_library %}
+True!
+{% endif %}
+"""
+
+[tests.template]
+fn = "toolreg.Environment.__contains__"
+group = "environment"
+
+[tests.template.examples.basic]
+template = """
+{% if "filters.md" is template %}
+True!
+{% endif %}
+"""
+
+
+[tests.installed]
+fn = "toolreg.tools.tests.is_installed"
+group = "system"
+
+[tests.installed.examples.basic]
+template = """
+{% if "jinja2" is installed %}
+True!
+{% endif %}
+"""
+
+[tests.env_var]
+fn = "toolreg.tools.tests.is_env_var"
+group = "system"
+
+[tests.env_var.examples.basic]
+template = """
+{% if "CI" is env_var %}
+True!
+{% endif %}
+"""
+
+
+[tests.indented]
+fn = "toolreg.tools.tests.is_indented"
+group = "text"
+
+[tests.indented.examples.basic]
+template = """
+{% if "    some text" is indented %}
+True!
+{% endif %}
+"""
+
+
+[tests.file]
+fn = "os.path.isfile"
+group = "file"
+
+[tests.file.examples.basic]
+template = """
+{% if "README.md" is file %}
+True!
+{% endif %}
+"""
+
+
+[tests.dir]
+fn = "os.path.isdir"
+group = "file"
+
+[tests.dir.examples.basic]
+template = """
+{% if "src" is dir %}
+True!
+{% endif %}
+"""
+
+[tests.abstract]
+fn = "inspect.isabstract"
+group = "inspect"
+
+[tests.abstract.examples.basic]
+template = """
+{% if filters.join is abstract %}
+True!
+{% endif %}
+"""
+
+
+[tests.routine]
+fn = "inspect.isroutine"
+group = "inspect"
+
+[tests.routine.examples.basic]
+template = """
+{% if filters.join is routine %}
+True!
+{% endif %}
+"""
+
+
+[tests.module]
+fn = "inspect.ismodule"
+group = "inspect"
+
+[tests.module.examples.basic]
+template = """
+{% if filters is module %}
+True!
+{% endif %}
+"""
+
+
+[tests.class]
+fn = "inspect.isclass"
+group = "inspect"
+
+[tests.class.examples.basic]
+template = """
+{% if cycler is class %}
+True!
+{% endif %}
+"""
+
+
+[tests.method]
+fn = "inspect.ismethod"
+group = "inspect"
+
+[tests.method.examples.basic]
+template = """
+{% if filters.join is method %}
+True!
+{% endif %}
+"""
+
+
+[tests.function]
+fn = "inspect.isfunction"
+group = "inspect"
+
+[tests.function.examples.basic]
+template = """
+{% if filters.join is function %}
+True!
+{% endif %}
+"""
+
+
+[tests.generatorfunction]
+fn = "inspect.isgeneratorfunction"
+group = "inspect"
+
+[tests.generatorfunction.examples.basic]
+template = """
+{% if filters.join is generatorfunction %}
+True!
+{% endif %}
+"""
+
+
+[tests.generator]
+fn = "inspect.isgenerator"
+group = "inspect"
+
+[tests.generator.examples.basic]
+template = """
+{% if filters.join is generator %}
+True!
+{% endif %}
+"""
+
+
+[tests.coroutinefunction]
+fn = "inspect.iscoroutinefunction"
+group = "inspect"
+
+[tests.coroutinefunction.examples.basic]
+template = """
+{% if filters.join is coroutinefunction %}
+True!
+{% endif %}
+"""
+
+
+[tests.coroutine]
+fn = "inspect.iscoroutine"
+group = "inspect"
+
+[tests.coroutine.examples.basic]
+template = """
+{% if filters.join is coroutine %}
+True!
+{% endif %}
+"""
+
+
+[tests.awaitable]
+fn = "inspect.isawaitable"
+group = "inspect"
+
+[tests.awaitable.examples.basic]
+template = """
+{% if filters.join is awaitable %}
+True!
+{% endif %}
+"""
+
+
+[tests.asyncgenfunction]
+fn = "inspect.isasyncgenfunction"
+group = "inspect"
+
+[tests.asyncgenfunction.examples.basic]
+template = """
+{% if filters.join is asyncgenfunction %}
+True!
+{% endif %}
+"""
+
+
+[tests.asyncgen]
+fn = "inspect.isasyncgen"
+group = "inspect"
+
+[tests.asyncgen.examples.basic]
+template = """
+{% if filters.join is asyncgen %}
+True!
+{% endif %}
+"""
+
+
+[tests.traceback]
+fn = "inspect.istraceback"
+group = "inspect"
+
+[tests.traceback.examples.basic]
+template = """
+{% if filters.join is traceback %}
+True!
+{% endif %}
+"""
+
+
+[tests.frame]
+fn = "inspect.isframe"
+group = "inspect"
+
+[tests.frame.examples.basic]
+template = """
+{% if filters.join is frame %}
+True!
+{% endif %}
+"""
+
+
+[tests.code]
+fn = "inspect.iscode"
+group = "inspect"
+
+[tests.code.examples.basic]
+template = """
+{% if filters.join is code %}
+True!
+{% endif %}
+"""
+
+
+[tests.methodwrapper]
+fn = "inspect.ismethodwrapper"
+group = "inspect"
+
+[tests.methodwrapper.examples.basic]
+template = """
+{% if filters.join is methodwrapper %}
+True!
+{% endif %}
+"""
+
+
+[tests.methoddescriptor]
+fn = "inspect.ismethoddescriptor"
+group = "inspect"
+
+[tests.methoddescriptor.examples.basic]
+template = """
+{% if filters.join is methoddescriptor %}
+True!
+{% endif %}
+"""
+
+
+[tests.datadescriptor]
+fn = "inspect.isdatadescriptor"
+group = "inspect"
+
+[tests.datadescriptor.examples.basic]
+template = """
+{% if filters.join is datadescriptor %}
+True!
+{% endif %}
+"""
+
+
+[tests.getsetdescriptor]
+fn = "inspect.isgetsetdescriptor"
+group = "inspect"
+
+[tests.getsetdescriptor.examples.basic]
+template = """
+{% if filters.join is getsetdescriptor %}
+True!
+{% endif %}
+"""
+
+
+[tests.memberdescriptor]
+fn = "inspect.ismemberdescriptor"
+group = "inspect"
+
+[tests.memberdescriptor.examples.basic]
+template = """
+{% if filters.join is memberdescriptor %}
+True!
+{% endif %}
+"""

@@ -1,0 +1,520 @@
+# This file indexes the "original" jinja filters so that they show up in the docs.
+
+[filters.abs]
+fn = "builtins.abs" # "jinja2.filters.abs"
+group = "number"
+[filters.abs.examples.basic]
+template = """
+{{ -5 | abs }}
+"""
+[filters.abs.examples.advanced]
+template = """
+{{ [-1, -5, 10] | map('abs') | list }}
+"""
+
+[filters.attr]
+fn = "jinja2.filters.do_attr"
+group = "misc"
+[filters.attr.examples.basic]
+template = """
+{{ "abc" | attr("removesuffix") }}
+"""
+[filters.attr.examples.advanced]
+template = """
+{{ ["abc", "def"] | map(attribute="upper") | list }}
+"""
+
+[filters.batch]
+fn = "jinja2.filters.do_batch"
+group = "iter"
+[filters.batch.examples.basic]
+template = """
+{{ ["a", "b", "c", "d", "e"] | batch(2) | list }}
+"""
+[filters.batch.examples.with_fill]
+template = """
+{{ ["a", "b", "c"] | batch(2, fill_with="x") | list }}
+"""
+
+[filters.capitalize]
+fn = "jinja2.filters.do_capitalize"
+group = "text"
+[filters.capitalize.examples.basic]
+template = """
+{{ "abc" | capitalize }}
+"""
+
+[filters.center]
+fn = "jinja2.filters.do_center"
+group = "text"
+[filters.center.examples.basic]
+template = """
+{{ "sth" | center(20) }}
+"""
+
+[filters.default]
+fn = "jinja2.filters.do_default"
+group = "misc"
+aliases = ["d"]
+[filters.default.examples.basic]
+template = """
+{{ variable | default("some fallback") }}
+"""
+
+[filters.dictsort]
+fn = "jinja2.filters.do_dictsort"
+group = "serialize"
+[filters.dictsort.examples.basic]
+template = """
+{{ {"b": 1, "a": 2} | dictsort }}
+"""
+[filters.dictsort.examples.by_value]
+template = """
+{{ {"b": 1, "a": 2} | dictsort(by="value") }}
+"""
+
+[filters.filesizeformat]
+fn = "jinja2.filters.do_filesizeformat"
+group = "file"
+[filters.filesizeformat.examples.basic]
+template = """
+{{ 134324324234 | filesizeformat }}
+"""
+[filters.filesizeformat.examples.binary]
+template = """
+{{ 1024 | filesizeformat(binary=true) }}
+"""
+
+[filters.first]
+fn = "jinja2.filters.do_first"
+group = "iter"
+[filters.first.examples.basic]
+template = """
+{{ [1, 2, 3] | first }}
+"""
+[filters.first.examples.with_string]
+template = """
+{{ "Hello" | first }}
+"""
+
+[filters.float]
+fn = "jinja2.filters.do_float"
+group = "number"
+[filters.float.examples.basic]
+template = """
+{{ "0.4" | float }}
+"""
+[filters.float.examples.with_default]
+template = """
+{{ "invalid" | float(default=1.0) }}
+"""
+
+[filters.forceescape]
+fn = "jinja2.filters.do_forceescape"
+group = "text"
+[filters.forceescape.examples.basic]
+template = """
+{{ "<>" | forceescape }}
+"""
+
+[filters.format]
+fn = "jinja2.filters.do_format"
+group = "format"
+[filters.format.examples.basic]
+template = """
+{{ "{test}" | format(test="abc") }}
+"""
+[filters.format.examples.positional]
+template = """
+{{ "%s, %s!" | format("Hello", "World") }}
+"""
+
+[filters.groupby]
+fn = "jinja2.filters.do_groupby"
+group = "iter"
+[filters.groupby.examples.basic]
+template = """
+{{ [cycler] | groupby("__module__") }}
+"""
+[filters.groupby.examples.with_dicts]
+template = """
+{{ [{"name": "A", "type": 1}, {"name": "B", "type": 1}, {"name": "C", "type": 2}] | groupby("type") | list }}
+"""
+
+[filters.indent]
+fn = "jinja2.filters.do_indent"
+group = "text"
+[filters.indent.examples.basic]
+template = """
+{{ "abc\ndef" | indent }}
+"""
+[filters.indent.examples.custom]
+template = """
+{{ "first\nsecond" | indent(width=4, first=true) }}
+"""
+
+[filters.int]
+fn = "jinja2.filters.do_int"
+group = "type"
+[filters.int.examples.basic]
+template = """
+{{ "3" | int }}
+"""
+[filters.int.examples.with_base]
+template = """
+{{ "ff" | int(base=16) }}
+"""
+
+[filters.join]
+fn = "jinja2.filters.do_join"
+group = "iter"
+[filters.join.examples.basic]
+template = """
+{{ ["a", "b", "c"] | join }}
+"""
+[filters.join.examples.with_delimiter]
+template = """
+{{ ["a", "b", "c"] | join(" | ") }}
+"""
+
+[filters.last]
+fn = "jinja2.filters.do_last"
+group = "iter"
+[filters.last.examples.basic]
+template = """
+{{ ["a", "b", "c"] | last }}
+"""
+
+[filters.length]
+fn = "builtins.len" # "jinja2.filters.len"
+group = "iter"
+aliases = ["count"]
+[filters.length.examples.basic]
+template = """
+{{ ["a", "b", "c"] | length }}
+"""
+[filters.length.examples.with_string]
+template = """
+{{ "Hello World" | length }}
+"""
+
+[filters.list]
+fn = "jinja2.filters.do_list"
+group = "type"
+[filters.list.examples.basic]
+template = """
+{{ ("a", "b") | list }}
+"""
+[filters.list.examples.with_string]
+template = """
+{{ "abc" | list }}
+"""
+
+[filters.lower]
+fn = "jinja2.filters.do_lower"
+group = "text"
+[filters.lower.examples.basic]
+template = """
+{{ "ABC" | lower }}
+"""
+
+[filters.items]
+fn = "jinja2.filters.do_items"
+group = "serialize"
+[filters.items.examples.basic]
+template = """
+{{ {"a": "b"} | items }}
+"""
+[filters.items.examples.nested]
+template = """
+{{ {"a": {"b": "c"}} | items | list }}
+"""
+
+[filters.map]
+fn = "jinja2.filters.do_map"
+group = "misc"
+[filters.map.examples.basic]
+template = """
+{{ [1, cycler] | map(attribute="__doc__") }}
+"""
+[filters.map.examples.with_method]
+template = """
+{{ ["HELLO", "WoRlD"] | map("lower") | list }}
+"""
+
+[filters.min]
+fn = "jinja2.filters.do_min"
+group = "number"
+[filters.min.examples.basic]
+template = """
+{{ [1, 2, 3] | min }}
+"""
+[filters.min.examples.with_attribute]
+template = """
+{{ [{"val": 1}, {"val": 2}] | min(attribute="val") }}
+"""
+
+[filters.max]
+fn = "jinja2.filters.do_max"
+group = "number"
+[filters.max.examples.basic]
+template = """
+{{ [1, 2, 3] | max }}
+"""
+[filters.max.examples.with_attribute]
+template = """
+{{ [{"val": 1}, {"val": 2}] | max(attribute="val") }}
+"""
+
+[filters.pprint]
+fn = "jinja2.filters.do_pprint"
+group = "format"
+[filters.pprint.examples.basic]
+template = """
+{{ ([10000] * 10) | pprint }}
+"""
+
+[filters.random]
+fn = "jinja2.filters.do_random"
+group = "misc"
+[filters.random.examples.basic]
+template = """
+{{ [1, 2, 3] | random }}
+"""
+
+[filters.reject]
+fn = "jinja2.filters.do_reject"
+group = "iter"
+[filters.reject.examples.basic]
+template = """
+{{ [1, 2, 3, 4] | reject("even") | list }}
+"""
+
+[filters.rejectattr]
+fn = "jinja2.filters.do_rejectattr"
+group = "iter"
+# [filters.rejectattr.examples.basic]
+# template = """
+# {{ users | rejectattr("is_active") | list }}
+# """
+
+[filters.replace]
+fn = "jinja2.filters.do_replace"
+group = "text"
+[filters.replace.examples.basic]
+template = """
+{{ "abc" | replace("a", "x") }}
+"""
+[filters.replace.examples.with_count]
+template = """
+{{ "aaaa" | replace("a", "b", 2) }}
+"""
+
+[filters.reverse]
+fn = "jinja2.filters.do_reverse"
+group = "iter"
+[filters.reverse.examples.basic]
+template = """
+{{ [1, 2, 3] | reverse }}
+"""
+[filters.reverse.examples.with_string]
+template = """
+{{ "hello" | list | reverse | join }}
+"""
+
+[filters.round]
+fn = "jinja2.filters.do_round"
+group = "number"
+[filters.round.examples.basic]
+template = """
+{{ 1.6 | round }}
+"""
+[filters.round.examples.precision]
+template = """
+{{ 1.23456 | round(2) }}
+"""
+
+[filters.safe]
+fn = "jinja2.filters.do_mark_safe"
+group = "text"
+[filters.safe.examples.basic]
+template = """
+{{ "<strong>Bold</strong>" | safe }}
+"""
+
+[filters.select]
+fn = "jinja2.filters.do_select"
+group = "iter"
+[filters.select.examples.basic]
+template = """
+{{ [1, 2, 3, 4] | select("even") | list }}
+"""
+
+[filters.selectattr]
+fn = "jinja2.filters.do_selectattr"
+group = "iter"
+# [filters.selectattr.examples.basic]
+# template = """
+# {{ users | selectattr("is_active") | list }}
+# """
+
+[filters.slice]
+fn = "jinja2.filters.do_slice"
+group = "iter"
+[filters.slice.examples.basic]
+template = """
+{{ [1, 2, 3, 4, 5] | slice(2) | list }}
+"""
+
+[filters.sort]
+fn = "jinja2.filters.do_sort"
+group = "iter"
+[filters.sort.examples.basic]
+template = """
+{{ ["c", "b", "a"] | sort }}
+"""
+
+# [filters.string]
+# fn = "jinja2.filters.soft_str"
+# group = "builtin"
+# # [filters.string.examples.basic]
+# template = """
+# {{ "abc" | string }}
+# """
+
+[filters.striptags]
+fn = "jinja2.filters.do_striptags"
+group = "text"
+[filters.striptags.examples.basic]
+template = """
+{{ "<p>text</p>" | striptags }}
+"""
+[filters.striptags.examples.nested]
+template = """
+{{ "<div><p>nested <b>tags</b></p></div>" | striptags }}
+"""
+
+[filters.sum]
+fn = "jinja2.filters.do_sum"
+group = "number"
+[filters.sum.examples.basic]
+template = """
+{{ [1, 2, 3] | sum }}
+"""
+
+[filters.title]
+fn = "jinja2.filters.do_title"
+group = "text"
+[filters.title.examples.basic]
+template = """
+{{ "abc" | title }}
+"""
+[filters.title.examples.sentence]
+template = """
+{{ "hello world" | title }}
+"""
+
+[filters.trim]
+fn = "jinja2.filters.do_trim"
+group = "text"
+[filters.trim.examples.basic]
+template = """
+{{ "  abc  " | trim }}
+"""
+[filters.trim.examples.with_chars]
+template = """
+{{ "...text..." | trim(".") }}
+"""
+
+[filters.truncate]
+fn = "jinja2.filters.do_truncate"
+group = "text"
+[filters.truncate.examples.basic]
+template = """
+{{ "too long text" | truncate(5) }}
+"""
+
+[filters.unique]
+fn = "jinja2.filters.do_unique"
+group = "iter"
+[filters.unique.examples.basic]
+template = """
+{{ [1, 2, 1] | unique }}
+"""
+
+[filters.upper]
+fn = "jinja2.filters.do_upper"
+group = "text"
+[filters.upper.examples.basic]
+template = """
+{{ "sth" | upper }}
+"""
+
+[filters.urlencode]
+fn = "jinja2.filters.do_urlencode"
+group = "html"
+[filters.urlencode.examples.basic]
+template = """
+{{ "Some text" | urlencode }}
+"""
+[filters.urlencode.examples.with_dict]
+template = """
+{{ {"key": "value with spaces"} | urlencode }}
+"""
+
+[filters.urlize]
+fn = "jinja2.filters.do_urlize"
+group = "html"
+[filters.urlize.examples.basic]
+template = """
+{{ "some text" | urlize }}
+"""
+[filters.urlize.examples.with_target]
+template = """
+{{ "https://example.com" | urlize(target="_blank") }}
+"""
+
+[filters.wordcount]
+fn = "jinja2.filters.do_wordcount"
+group = "text"
+[filters.wordcount.examples.basic]
+template = """
+{{ "Some longer text" | wordcount }}
+"""
+
+[filters.wordwrap]
+fn = "jinja2.filters.do_wordwrap"
+group = "text"
+[filters.wordwrap.examples.basic]
+template = """
+{{ "sth" | wordwrap }}
+"""
+[filters.wordwrap.examples.width]
+template = """
+{{ "a very long text" | wordwrap(width=5) }}
+"""
+
+[filters.xmlattr]
+fn = "jinja2.filters.do_xmlattr"
+group = "html"
+[filters.xmlattr.examples.basic]
+template = """
+<ul{{ {'class': 'my_list', 'missing': none,
+        'id': 'some-id'}|xmlattr }}>
+"""
+[filters.xmlattr.examples.complex]
+template = """
+<div{{ {'data-items': ['a', 'b'], 'disabled': true}|xmlattr }}>
+"""
+
+[filters.tojson]
+fn = "jinja2.filters.do_tojson"
+group = "serialize"
+[filters.tojson.examples.basic]
+template = """
+{{ "[1, 2]" | tojson }}
+"""
+[filters.tojson.examples.with_indent]
+template = """
+{{ {"nested": {"data": [1,2]}} | tojson(indent=2) }}
+"""
