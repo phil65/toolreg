@@ -42,7 +42,6 @@ def temp_binary_file(tmp_upath: UPath, binary_content: bytes) -> UPath:
     return file_path
 
 
-@pytest.mark.asyncio
 async def test_read_text_files(
     temp_text_file: UPath,
     text_content: str,
@@ -53,7 +52,6 @@ async def test_read_text_files(
     assert isinstance(results[temp_text_file], str)
 
 
-@pytest.mark.asyncio
 async def test_read_binary_files(
     temp_binary_file: UPath,
     binary_content: bytes,
@@ -64,21 +62,18 @@ async def test_read_binary_files(
     assert isinstance(results[temp_binary_file], bytes)
 
 
-@pytest.mark.asyncio
 async def test_read_text_files_empty_list() -> None:
     """Test reading an empty list of text files."""
     results = await upath_read.read_text_files([])
     assert results == {}
 
 
-@pytest.mark.asyncio
 async def test_read_binary_files_empty_list() -> None:
     """Test reading an empty list of binary files."""
     results = await upath_read.read_binary_files([])
     assert results == {}
 
 
-@pytest.mark.asyncio
 async def test_read_text_files_nonexistent_file(tmp_upath: UPath) -> None:
     """Test reading a nonexistent text file raises an error."""
     nonexistent_file = tmp_upath / "nonexistent.txt"
@@ -86,7 +81,6 @@ async def test_read_text_files_nonexistent_file(tmp_upath: UPath) -> None:
         await upath_read.read_text_files([nonexistent_file])
 
 
-@pytest.mark.asyncio
 async def test_read_binary_files_nonexistent_file(tmp_upath: UPath) -> None:
     """Test reading a nonexistent binary file raises an error."""
     nonexistent_file = tmp_upath / "nonexistent.bin"
@@ -94,7 +88,6 @@ async def test_read_binary_files_nonexistent_file(tmp_upath: UPath) -> None:
         await upath_read.read_binary_files([nonexistent_file])
 
 
-@pytest.mark.asyncio
 async def test_read_text_files_multiple(tmp_upath: UPath, text_content: str) -> None:
     """Test reading multiple text files."""
     file1 = tmp_upath / "test1.txt"
@@ -108,7 +101,6 @@ async def test_read_text_files_multiple(tmp_upath: UPath, text_content: str) -> 
     assert all(content == text_content for content in results.values())
 
 
-@pytest.mark.asyncio
 async def test_read_binary_files_multiple(
     tmp_upath: UPath, binary_content: bytes
 ) -> None:
@@ -124,7 +116,6 @@ async def test_read_binary_files_multiple(
     assert all(content == binary_content for content in results.values())
 
 
-@pytest.mark.asyncio
 async def test_read_text_files_with_str_path(tmp_path, text_content: str) -> None:
     """Test reading text files using string paths."""
     file_path = tmp_path / "test.txt"
@@ -139,7 +130,6 @@ async def test_read_text_files_with_str_path(tmp_path, text_content: str) -> Non
     assert isinstance(results[upath], str)
 
 
-@pytest.mark.asyncio
 async def test_read_binary_files_with_pathlike(tmp_path, binary_content: bytes) -> None:
     """Test reading binary files using PathLike objects."""
     file_path = tmp_path / "test.bin"
@@ -153,7 +143,6 @@ async def test_read_binary_files_with_pathlike(tmp_path, binary_content: bytes) 
     assert isinstance(results[upath], bytes)
 
 
-@pytest.mark.asyncio
 async def test_read_text_files_mixed_path_types(
     tmp_path, tmp_upath: UPath, text_content: str
 ) -> None:
