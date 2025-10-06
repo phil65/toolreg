@@ -8,4 +8,7 @@ from toolreg.registry.registration import register_tool
 from toolreg.registry.example import Example
 
 __all__ = [
-    "__version__","Example", "register_tool"]
+    "Example",
+    "__version__",
+    "register_tool",
+]
