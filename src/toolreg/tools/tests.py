@@ -7,14 +7,11 @@ import math
 import os
 import re
 import sys
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any
 
 import upath
 
 from toolreg.utils import resolve
-
-
-T = TypeVar("T")
 
 
 if TYPE_CHECKING:

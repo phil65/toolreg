@@ -3,16 +3,13 @@ from __future__ import annotations
 from collections.abc import Mapping
 import itertools
 import operator
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any
 
 from toolreg import Example, register_tool
 
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Generator, Iterable
-
-
-T = TypeVar("T")
 
 
 @register_tool(
@@ -343,7 +340,7 @@ def batched[T](iterable: Iterable[T], n: int) -> Generator[tuple[T, ...], None, 
         )
     ],
 )
-def natsort(
+def natsort[T](
     val: Iterable[T],
     key: str | Callable[[T], Any] | None = None,
     reverse: bool = False,
@@ -383,7 +380,7 @@ def natsort(
         )
     ],
 )
-def groupby(
+def groupby[T](
     data: Iterable[T],
     key: Callable[[T], Any] | str | None = None,
     *,

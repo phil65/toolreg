@@ -2,14 +2,12 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any
 
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
 
-
-T = TypeVar("T")
 
 type MappingType = Mapping[Any, Any]
 type ListType = list[Any]
@@ -107,7 +105,7 @@ class DeepMerger:
         if mergers is not None:
             self.mergers = mergers
 
-    def merge(self, source: T, target: T) -> T:
+    def merge[T](self, source: T, target: T) -> T:
         """Merge two objects of the same type.
 
         Args:

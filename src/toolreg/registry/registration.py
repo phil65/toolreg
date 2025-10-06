@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import functools
 import logging
-from typing import TYPE_CHECKING, Any, Literal, TypeVar
+from typing import TYPE_CHECKING, Any, Literal
 
 from toolreg.registry import registry, tool
 
@@ -16,7 +16,6 @@ if TYPE_CHECKING:
 
 
 logger = logging.getLogger(__name__)
-T = TypeVar("T")
 
 
 class ToolRegistrar:
@@ -89,7 +88,7 @@ class ToolRegistrar:
             err_msg = f"Failed to register {func.__name__}"
             raise RuntimeError(err_msg) from exc
 
-    def register_tool(
+    def register_tool[T](
         self,
         typ: Literal["filter", "test", "function"],
         *,

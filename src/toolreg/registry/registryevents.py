@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from datetime import datetime
 import logging
-from typing import TYPE_CHECKING, Any, Protocol, TypedDict, TypeVar
+from typing import TYPE_CHECKING, Any, Protocol, TypedDict
 
 from pydantic import BaseModel, ConfigDict, Field
 import upath
@@ -15,7 +15,6 @@ if TYPE_CHECKING:
 
 
 logger = logging.getLogger(__name__)
-T = TypeVar("T")
 
 
 # Custom types
@@ -398,7 +397,7 @@ def wrap_function[T](
     return wrapper
 
 
-def register_tool(**metadata: Any) -> Callable[[Callable[..., T]], Callable[..., T]]:
+def register_tool[T](**metadata: Any) -> Callable[[Callable[..., T]], Callable[..., T]]:
     """Decorator to register a tool with event handling.
 
     Registers a function as a tool and wraps it with metrics and logging.
@@ -446,7 +445,7 @@ if __name__ == "__main__":
     logging_handler = LoggingRegistryEvents("function_calls.log")
     shared_events = CompositeEvents([metrics_handler, logging_handler])
 
-    def register_tool_with_events(
+    def register_tool_with_events[T](
         **metadata: Any,
     ) -> Callable[[Callable[..., T]], Callable[..., T]]:
         """Create a tool registration decorator using shared event handlers."""
