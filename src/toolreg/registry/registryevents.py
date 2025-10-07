@@ -56,7 +56,7 @@ class ExecutionContext(BaseModel):
 
     function_name: str = Field(..., description="Name of the executed function")
     args: FunctionArgs = Field(default_factory=tuple, description="Positional arguments")
-    kwargs: FunctionKwargs = Field(default_factory=dict, description="Keyword arguments")
+    kw_args: FunctionKwargs = Field(default_factory=dict, description="Keyword arguments")
     start_time: datetime = Field(..., description="Execution start timestamp")
     result: Any | None = Field(None, description="Function execution result")
     error: Exception | None = Field(None, description="Exception if execution failed")
@@ -257,7 +257,7 @@ class LoggingRegistryEvents(BaseRegistryEvents):
     def pre_execute(self, context: ExecutionContext) -> None:
         self._log(
             f"Executing {context.function_name} "
-            f"with args={context.args}, kwargs={context.kwargs}"
+            f"with args={context.args}, kwargs={context.kw_args}"
         )
 
     def post_execute(
