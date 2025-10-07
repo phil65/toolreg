@@ -7,7 +7,7 @@ import functools
 import inspect
 import logging
 import types
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any
 
 from upath import UPath
 
@@ -20,7 +20,6 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-ClassType = TypeVar("ClassType", bound=type)
 
 HasCodeType = (
     types.ModuleType
