@@ -5,13 +5,14 @@ import pytest
 from toolreg.tools import text as texttools
 
 
-GIVEN = """def test(sth, averylongvarname, anotherlongvarname, andanother): pass"""
+GIVEN = """def test(sth, averylongvarname, anotherlongvarname, andanotherevenlongername, longer_than_the_limit): pass"""  # noqa: E501
 EXPECTED = """\
 def test(
     sth,
     averylongvarname,
     anotherlongvarname,
-    andanother,
+    andanotherevenlongername,
+    longer_than_the_limit,
 ):
     pass
 """
@@ -34,8 +35,8 @@ def test_rstrip():
 
 
 def test_format_code():
-    assert texttools.format_code(GIVEN, line_length=50) == EXPECTED
-    assert texttools.format_code("invalid code!", line_length=50) == "invalid code!"
+    assert texttools.format_code(GIVEN) == EXPECTED
+    assert texttools.format_code("invalid code!") == "invalid code!"
 
 
 def test_format_signature():
@@ -57,7 +58,7 @@ def test_slugify():
 
 if __name__ == "__main__":
     code = "def test(sth, fsjkdalfjksdalfjsadk, fjskldjfkdsljf, fsdkjlafjkdsafj): pass"
-    text = texttools.format_code(code, line_length=50)
+    text = texttools.format_code(code)
     print(text)
 
 

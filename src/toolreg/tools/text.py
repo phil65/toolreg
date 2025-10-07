@@ -6,11 +6,12 @@ import datetime
 import functools
 import inspect
 import itertools
+from pathlib import Path
 import re
+import subprocess
 from typing import TYPE_CHECKING, Any
 
-from jinjarope import utils
-
+# see https://github.com/astral-sh/ruff/pull/18224
 from toolreg import Example, register_tool
 
 
@@ -148,18 +149,28 @@ def snake_case(text: str) -> str:
     ],
 )
 @functools.cache
-def format_code(code: str, line_length: int = 100) -> str:
+def format_code(code: str) -> str:
     """Format code to given line length using `black`.
 
     Args:
         code: The code to format
         line_length: Line length limit for formatted code
     """
-    code = code.strip()
-    if len(code) < line_length:
-        return code
-    formatter = utils._get_black_formatter()
-    return formatter(code, line_length)
+    from ruff.__main__ import find_ruff_bin
+
+    def ruff_format(source: str) -> str:
+        result = subprocess.run(
+            [find_ruff_bin(), "format", "-"],
+            input=source.strip(),
+            text=True,
+            capture_output=True,
+            check=True,
+            cwd=Path.cwd(),
+        )
+        result.check_returncode()
+        return result.stdout
+
+    return ruff_format(code)
 
 
 @register_tool(
@@ -377,4 +388,4 @@ def format_timestamp(timestamp: float, fmt: str) -> str:
 
 if __name__ == "__main__":
     code = "def test(sth, fsjkdalfjksdalfjsadk, fjskldjfkdsljf, fsdkjlafjkdsafj): pass"
-    result = format_code(code, line_length=50)
+    result = format_code(code)
