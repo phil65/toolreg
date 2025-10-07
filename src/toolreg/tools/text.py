@@ -170,7 +170,10 @@ def format_code(code: str) -> str:
         result.check_returncode()
         return result.stdout
 
-    return ruff_format(code)
+    try:
+        return ruff_format(code)
+    except subprocess.CalledProcessError:
+        return code
 
 
 @register_tool(
