@@ -11,8 +11,6 @@ import re
 from typing import TYPE_CHECKING, Any, Literal, TypeVar
 from xml.etree import ElementTree as ET
 
-import requests
-
 from toolreg import Example, register_tool
 
 
@@ -588,17 +586,19 @@ def url_to_b64(image_url: str) -> str | None:
     """Convert an image URL to a base64-encoded string.
 
     Args:
-        image_url: The URL of the image to convert
+        image_url: The URL of the image to convert.
 
     Returns:
-        The base64-encoded string of the image
-
-    Raises:
-        requests.RequestException: If there's an error downloading the image
+        The base64-encoded string of the image.
     """
-    response = requests.get(image_url)
-    response.raise_for_status()
-    return base64.b64encode(response.content).decode("utf-8")
+    import httpx
+
+    with httpx.Client(follow_redirects=True) as client:
+        response = client.get(image_url)
+        response.raise_for_status()
+        image_data = response.content
+
+    return base64.b64encode(image_data).decode("utf-8")
 
 
 StrOrBytes = TypeVar("StrOrBytes", bytes, str)

@@ -234,11 +234,6 @@ def llm_analyze_image(
 
     Returns:
         The analysis of the image as a string.
-
-    Raises:
-        ValueError: If the image_url is empty or invalid.
-        requests.RequestException: If there's an error downloading the image.
-        Exception: If there's an error in making the API call or processing the response.
     """
     if not image_url or not image_url.strip():
         msg = "Image URL cannot be empty"

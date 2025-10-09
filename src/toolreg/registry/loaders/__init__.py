@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-import logging
 from typing import ClassVar, TYPE_CHECKING
-
+from toolreg import log
 from toolreg.registry import registry
 from toolreg.registry.loaders.base import LoaderError
 from toolreg.registry.loaders.module_loader import ModuleLoader
@@ -15,7 +14,7 @@ if TYPE_CHECKING:
     from toolreg.registry.loaders.base import BaseLoader
 
 
-logger = logging.getLogger(__name__)
+logger = log.get_logger(__name__)
 
 
 class ToolLoader:

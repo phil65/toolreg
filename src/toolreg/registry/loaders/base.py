@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 import abc
-import logging
 
+from toolreg import log
 from toolreg.registry import registry
 
 
-logger = logging.getLogger(__name__)
+logger = log.get_logger(__name__)
 
 
 class BaseLoader(abc.ABC):
