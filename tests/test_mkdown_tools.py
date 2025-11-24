@@ -13,10 +13,7 @@ def test_md_link():
     )
     assert mkdown.md_link("GitHub", "") == "GitHub"
     assert mkdown.md_link("GitHub", None) == "GitHub"
-    assert (
-        mkdown.md_link(None, "http://github.com")
-        == "[http://github.com](http://github.com)"
-    )
+    assert mkdown.md_link(None, "http://github.com") == "[http://github.com](http://github.com)"
     assert mkdown.md_link(None, None) == ""
 
 
@@ -50,9 +47,7 @@ def test_md_escape():
 
 def test_md_style():
     assert mkdown.md_style("Hello, World!") == "Hello, World!"
-    assert (
-        mkdown.md_style("Hello, World!", size=3) == "<font size='3'>Hello, World!</font>"
-    )
+    assert mkdown.md_style("Hello, World!", size=3) == "<font size='3'>Hello, World!</font>"
     assert mkdown.md_style("Hello, World!", bold=True) == "**Hello, World!**"
     assert mkdown.md_style("Hello, World!", italic=True) == "*Hello, World!*"
     assert mkdown.md_style("Hello, World!", code=True) == "`Hello, World!`"

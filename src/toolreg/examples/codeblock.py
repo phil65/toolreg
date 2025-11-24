@@ -28,9 +28,7 @@ class CodeBlock(BaseModel):
     content: str = Field(..., description="Code block content")
     title: str | None = Field(default=None, description="Optional title")
     line_numbers: bool = Field(default=False, description="Show line numbers")
-    highlight_lines: list[int] = Field(
-        default_factory=list, description="Lines to highlight"
-    )
+    highlight_lines: list[int] = Field(default_factory=list, description="Lines to highlight")
 
 
 def parse_code_block(text: str) -> CodeBlock:

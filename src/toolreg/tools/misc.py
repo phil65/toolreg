@@ -167,9 +167,7 @@ def match(obj: Any, mapping: dict[str | type, str] | None = None, **kwargs: Any)
     typ="function",
     group="misc",
     icon="mdi:web",
-    examples=[
-        Example(title="basic", template="""{% if has_internet %}True!{% endif %}""")
-    ],
+    examples=[Example(title="basic", template="""{% if has_internet %}True!{% endif %}""")],
 )
 def has_internet() -> bool:
     """Return true if machine is connected to internet.
@@ -218,9 +216,7 @@ def utcnow() -> datetime.datetime:
     typ="filter",
     group="path",
     icon="mdi:file",
-    examples=[
-        Example(title="basic", template="""{{ "filename.zip" | guess_mime_type }}""")
-    ],
+    examples=[Example(title="basic", template="""{{ "filename.zip" | guess_mime_type }}""")],
 )
 def guess_mime_type(path: str | os.PathLike[str]) -> str:
     """Guess the MIME type of given file.

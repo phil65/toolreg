@@ -19,10 +19,7 @@ def test_wrap_in_elem():
 
 
 def test_html_link():
-    assert (
-        html.html_link("Google", "http://google.com")
-        == "<a href='http://google.com'>Google</a>"
-    )
+    assert html.html_link("Google", "http://google.com") == "<a href='http://google.com'>Google</a>"
     assert html.html_link("Google", "") == "Google"
     assert html.html_link("Google", None) == "Google"
     assert (
@@ -45,8 +42,7 @@ def test_format_js_map():
 
 def test_svg_to_data_uri():
     assert (
-        html.svg_to_data_uri("<svg></svg>")
-        == "url('data:image/svg+xml;charset=utf-8,<svg></svg>')"
+        html.svg_to_data_uri("<svg></svg>") == "url('data:image/svg+xml;charset=utf-8,<svg></svg>')"
     )
     assert html.svg_to_data_uri("") == "url('data:image/svg+xml;charset=utf-8,')"
 
@@ -71,10 +67,7 @@ def test_clean_svg():
 
 def test_format_css_rule():
     assert html.format_css_rule({".a": {"b": "c"}}) == ".a {\n\tb: c;\n}\n\n"
-    assert (
-        html.format_css_rule({".a": {"b": "c", "d": "e"}})
-        == ".a {\n\tb: c;\n\td: e;\n}\n\n"
-    )
+    assert html.format_css_rule({".a": {"b": "c", "d": "e"}}) == ".a {\n\tb: c;\n\td: e;\n}\n\n"
     assert html.format_css_rule({".a": {"b": {"c": "d"}}}) == ".a b {\n\tc: d;\n}\n\n"
     assert html.format_css_rule({}) == ""
 

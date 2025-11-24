@@ -33,11 +33,7 @@ class ToolRegistry:
         """Get all registered items, optionally filtered by type."""
         if typ is None:
             return self._items
-        return {
-            name: (func, meta)
-            for name, (func, meta) in self._items.items()
-            if meta.typ == typ
-        }
+        return {name: (func, meta) for name, (func, meta) in self._items.items() if meta.typ == typ}
 
 
 if __name__ == "__main__":

@@ -87,11 +87,7 @@ class FilterExampleStrategy(ExampleStrategy):
             if origin == typing.Union:
                 # For Optional/Union types, use the first non-None type
                 return next(
-                    (
-                        self.get_example_value(arg)
-                        for arg in args
-                        if arg is not type(None)
-                    ),
+                    (self.get_example_value(arg) for arg in args if arg is not type(None)),
                     "example_text",
                 )
             if origin in (list, list):
@@ -99,9 +95,7 @@ class FilterExampleStrategy(ExampleStrategy):
             if origin in (dict, dict):
                 key_type = args[0] if args else str
                 value_type = args[1] if len(args) > 1 else Any
-                return {
-                    self.get_example_value(key_type): self.get_example_value(value_type)
-                }
+                return {self.get_example_value(key_type): self.get_example_value(value_type)}
 
         if value := self.type_mapping.get(type_hint):
             return value

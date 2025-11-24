@@ -104,9 +104,7 @@ class Tool(BaseModel):
             ),
             "examples": final_examples,
             "group": group if group is not None else "general",
-            "required_packages": required_packages
-            if required_packages is not None
-            else [],
+            "required_packages": required_packages if required_packages is not None else [],
             "aliases": aliases if aliases is not None else [],
             "icon": icon,
         }

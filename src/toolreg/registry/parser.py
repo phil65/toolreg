@@ -88,9 +88,7 @@ class MarkdownToolParser:
                         examples.append(Example(**current_example))
                     current_example = {"title": title}
 
-                case {"type": "paragraph"} if (
-                    current_example and "content" not in current_example
-                ):
+                case {"type": "paragraph"} if current_example and "content" not in current_example:
                     # Example description
                     current_example["description"] = " ".join(self._extract_text(node))
 
@@ -150,8 +148,6 @@ class MarkdownToolParser:
             if not found_node:
                 continue
 
-            if node["type"] == "code" and (
-                language is None or node.get("lang") == language
-            ):
+            if node["type"] == "code" and (language is None or node.get("lang") == language):
                 return CodeBlock(content=node["text"], language=node.get("lang"))
         return None

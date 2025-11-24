@@ -455,9 +455,9 @@ def get_path_icon(path: str | os.PathLike[str]) -> str:
 
     # Handle files by extension
     extension = path_obj.suffix.lower().lstrip(".")
-    return ICONIFY_ICONS.get(
-        extension, {"icon": "vscode-icons:default-file", "color": "#000000"}
-    )["icon"]
+    return ICONIFY_ICONS.get(extension, {"icon": "vscode-icons:default-file", "color": "#000000"})[
+        "icon"
+    ]
 
 
 @register_tool(

@@ -106,9 +106,7 @@ class RegistryEvents(Protocol):
             event handling and metrics collection.
         """
 
-    def post_execute(
-        self, context: ExecutionContext, duration: float, end_time: datetime
-    ) -> None:
+    def post_execute(self, context: ExecutionContext, duration: float, end_time: datetime) -> None:
         """Handle post-execution events.
 
         Args:
@@ -181,9 +179,7 @@ class BaseRegistryEvents(ABC):
         """Handle pre-execution events."""
 
     @abstractmethod
-    def post_execute(
-        self, context: ExecutionContext, duration: float, end_time: datetime
-    ) -> None:
+    def post_execute(self, context: ExecutionContext, duration: float, end_time: datetime) -> None:
         """Handle post-execution events."""
 
     @abstractmethod
@@ -210,9 +206,7 @@ class MetricsRegistryEvents(BaseRegistryEvents):
         self.execution_count[name] = self.execution_count.get(name, 0) + 1
         logger.debug("Starting execution of %s", name)
 
-    def post_execute(
-        self, context: ExecutionContext, duration: float, end_time: datetime
-    ) -> None:
+    def post_execute(self, context: ExecutionContext, duration: float, end_time: datetime) -> None:
         name = context.function_name
         times: list[float] = self.execution_times.setdefault(name, [])
         times.append(duration)
@@ -256,13 +250,10 @@ class LoggingRegistryEvents(BaseRegistryEvents):
 
     def pre_execute(self, context: ExecutionContext) -> None:
         self._log(
-            f"Executing {context.function_name} "
-            f"with args={context.args}, kwargs={context.kw_args}"
+            f"Executing {context.function_name} with args={context.args}, kwargs={context.kw_args}"
         )
 
-    def post_execute(
-        self, context: ExecutionContext, duration: float, end_time: datetime
-    ) -> None:
+    def post_execute(self, context: ExecutionContext, duration: float, end_time: datetime) -> None:
         status = "error" if context.error else "success"
         self._log(
             f"Completed {context.function_name} with {status} "
@@ -287,9 +278,7 @@ class CompositeEvents(BaseRegistryEvents):
         for handler in self.handlers:
             handler.pre_execute(context)
 
-    def post_execute(
-        self, context: ExecutionContext, duration: float, end_time: datetime
-    ) -> None:
+    def post_execute(self, context: ExecutionContext, duration: float, end_time: datetime) -> None:
         for handler in self.handlers:
             handler.post_execute(context, duration, end_time)
 
@@ -298,9 +287,7 @@ class CompositeEvents(BaseRegistryEvents):
             handler.on_error(error, context)
 
 
-def wrap_function[T](
-    func: Callable[..., T], events: BaseRegistryEvents
-) -> Callable[..., T]:
+def wrap_function[T](func: Callable[..., T], events: BaseRegistryEvents) -> Callable[..., T]:
     """Wrap a function with event handling.
 
     Creates a wrapper that tracks execution metrics and triggers event handlers.

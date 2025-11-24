@@ -34,9 +34,7 @@ class ExampleGenerator:
         msg = f"No example generation strategy found for tool type: {tool.typ}"
         raise ValueError(msg)
 
-    def add_strategy(
-        self, tool_type: str, strategy: examplestrategy.ExampleStrategy
-    ) -> None:
+    def add_strategy(self, tool_type: str, strategy: examplestrategy.ExampleStrategy) -> None:
         """Add a new example generation strategy.
 
         Args:

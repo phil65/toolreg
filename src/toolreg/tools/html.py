@@ -87,9 +87,7 @@ def wrap_in_elem(
     group="html",
     icon="mdi:link",
     examples=[
-        Example(
-            title="basic", template="""{{ "Test" | html_link("https://google.com") }}"""
-        )
+        Example(title="basic", template="""{{ "Test" | html_link("https://google.com") }}""")
     ],
 )
 def html_link(text: str | None = None, link: str | None = None, **kwargs: Any) -> str:
@@ -114,9 +112,7 @@ def html_link(text: str | None = None, link: str | None = None, **kwargs: Any) -
     typ="filter",
     group="html",
     icon="mdi:language-javascript",
-    examples=[
-        Example(title="basic", template="""{{ {"abc": "def"} | format_js_map }}""")
-    ],
+    examples=[Example(title="basic", template="""{{ {"abc": "def"} | format_js_map }}""")],
 )
 def format_js_map(mapping: dict[str, Any] | str, indent: int = 4) -> str:
     """Return JS map str for given dictionary.
@@ -146,9 +142,7 @@ def format_js_map(mapping: dict[str, Any] | str, indent: int = 4) -> str:
     typ="filter",
     group="html",
     icon="mdi:svg",
-    examples=[
-        Example(title="basic", template="""{{ "<svg>...</svg>" | svg_to_data_uri }}""")
-    ],
+    examples=[Example(title="basic", template="""{{ "<svg>...</svg>" | svg_to_data_uri }}""")],
 )
 def svg_to_data_uri(svg: str) -> str:
     """Wrap svg as data URL.
@@ -190,9 +184,7 @@ def clean_svg(text: str) -> str:
     typ="filter",
     group="html",
     icon="mdi:language-css3",
-    examples=[
-        Example(title="basic", template="""{{ {"a": {"b": "c"} } | format_css_rule }}""")
-    ],
+    examples=[Example(title="basic", template="""{{ {"a": {"b": "c"} } | format_css_rule }}""")],
 )
 def format_css_rule(dct: Mapping[str, Any]) -> str:
     """Format a nested dictionary as CSS rule.
@@ -227,9 +219,7 @@ def format_css_rule(dct: Mapping[str, Any]) -> str:
     group="html",
     icon="mdi:xml",
     examples=[
-        Example(
-            title="basic", template="""{{ '<a><b><c>Hello!</c></b></a>' | format_xml }}"""
-        ),
+        Example(title="basic", template="""{{ '<a><b><c>Hello!</c></b></a>' | format_xml }}"""),
         Example(
             title="with_declaration",
             template="""{{ '<a><b><c>Hello!</c></b></a>' | format_xml(indent=4) }}""",

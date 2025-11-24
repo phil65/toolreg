@@ -101,9 +101,7 @@ def rstrip(text: str, chars: str | None = None) -> str:
     typ="filter",
     group="text",
     icon="mdi:format-letter-case",
-    examples=[
-        Example(title="basic", template="""{{ "some_text" | lower_camel_case }}""")
-    ],
+    examples=[Example(title="basic", template="""{{ "some_text" | lower_camel_case }}""")],
 )
 def lower_camel_case(text: str) -> str:
     """Convert given text to lower-camel-case.
@@ -217,9 +215,7 @@ def extract_body(src: str) -> str:
     typ="filter",
     group="format",
     icon="mdi:function",
-    examples=[
-        Example(title="basic", template="""{{ "".removesuffix | format_signature }}""")
-    ],
+    examples=[Example(title="basic", template="""{{ "".removesuffix | format_signature }}""")],
 )
 @functools.cache
 def format_signature(
@@ -321,9 +317,7 @@ def slugify(text: str | os.PathLike[str]) -> str:
     typ="filter",
     group="format",
     icon="mage:folder-2",
-    examples=[
-        Example(title="basic", template="""{{ "a_foldername" | dirname_to_title }}""")
-    ],
+    examples=[Example(title="basic", template="""{{ "a_foldername" | dirname_to_title }}""")],
 )
 def dirname_to_title(dirname: str | os.PathLike[str]) -> str:
     """Return a page tile obtained from a directory name.
@@ -370,9 +364,7 @@ def escape(text: str) -> str:
     examples=[
         Example(
             title="basic",
-            template=(
-                """{{ 1594819641.9622827 | format_timestamp("%Y-%m-%d %H:%M:%S") }}"""
-            ),
+            template=("""{{ 1594819641.9622827 | format_timestamp("%Y-%m-%d %H:%M:%S") }}"""),
         )
     ],
 )

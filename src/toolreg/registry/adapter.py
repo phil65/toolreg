@@ -44,9 +44,7 @@ class MarkdownAdapter:
                 current_block = []
             elif line.startswith("```") and in_block:
                 in_block = False
-                yield CodeBlock(
-                    content="".join(current_block), start_line=start_line, end_line=i
-                )
+                yield CodeBlock(content="".join(current_block), start_line=start_line, end_line=i)
             elif in_block:
                 current_block.append(line)
 
@@ -99,8 +97,7 @@ class MarkdownAdapter:
                     uri=uri, version=old_notebook.version
                 ),
                 cell_text_documents=[
-                    types.TextDocumentIdentifier(uri=cell.document)
-                    for cell in old_notebook.cells
+                    types.TextDocumentIdentifier(uri=cell.document) for cell in old_notebook.cells
                 ],
             )
             self.workspace.remove_notebook_document(params)
@@ -116,8 +113,7 @@ class MarkdownAdapter:
                     uri=uri, version=notebook.version
                 ),
                 cell_text_documents=[
-                    types.TextDocumentIdentifier(uri=cell.document)
-                    for cell in notebook.cells
+                    types.TextDocumentIdentifier(uri=cell.document) for cell in notebook.cells
                 ],
             )
             self.workspace.remove_notebook_document(params)

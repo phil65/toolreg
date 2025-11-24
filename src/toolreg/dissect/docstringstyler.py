@@ -75,10 +75,7 @@ class DocStringStyler:
             ValueError: If an invalid style is specified
         """
         if not DocstringStyle.is_valid(str(new_style)):
-            msg = (
-                f"Invalid style: {new_style}. "
-                f"Must be one of: {', '.join(self.VALID_STYLES)}"
-            )
+            msg = f"Invalid style: {new_style}. Must be one of: {', '.join(self.VALID_STYLES)}"
             raise ValueError(msg) from None
         self._current_style = str(new_style).lower()
 

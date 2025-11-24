@@ -37,10 +37,7 @@ def test_re_findall():
 
 def test_re_search():
     assert regex.re_search("Hello, World! Hello, Universe!", "World") == "World"
-    assert (
-        regex.re_search("Hello, World! Hello, Universe!", "world", ignorecase=True)
-        == "World"
-    )
+    assert regex.re_search("Hello, World! Hello, Universe!", "world", ignorecase=True) == "World"
     assert regex.re_search("Hello, World! Hello, Universe!", "Goodbye") is None
     assert regex.re_search("A\nB", "^B", multiline=True)
     with pytest.raises(ValueError, match=r"Unknown*"):

@@ -222,9 +222,7 @@ def get_doc(
     typ="filter",
     group="inspect",
     icon="mdi:function",
-    examples=[
-        Example(title="basic", template="""{{ filters.get_argspec | get_argspec }}""")
-    ],
+    examples=[Example(title="basic", template="""{{ filters.get_argspec | get_argspec }}""")],
 )
 def get_argspec(obj: Any, remove_self: bool = True) -> inspect.FullArgSpec:
     """Return a cleaned-up FullArgSpec for given callable.
@@ -277,9 +275,7 @@ def get_deprecated_message(obj: Any) -> str | None:
     typ="filter",
     group="inspect",
     icon="mdi:code-braces",
-    examples=[
-        Example(title="basic", template="""{{ filters.get_source | get_source }}""")
-    ],
+    examples=[Example(title="basic", template="""{{ filters.get_source | get_source }}""")],
 )
 @functools.cache
 def get_source(obj: HasCodeType) -> str:

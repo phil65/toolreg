@@ -104,8 +104,7 @@ def _categorize_by_return_type(return_type) -> str:
         if issubclass(return_type, (Iterator, ABCIterator, Iterable)):
             return "iterator"
         if (
-            hasattr(return_type, "__iter__")
-            and return_type.__iter__ is not object.__iter__  # type: ignore
+            hasattr(return_type, "__iter__") and return_type.__iter__ is not object.__iter__  # type: ignore
         ):
             return "iterator"
 

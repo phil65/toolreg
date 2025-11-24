@@ -14,9 +14,7 @@ type ListType = list[Any]
 type MergerType = Callable[[Any, Any, Any], Any]
 
 
-def merge_dict(
-    merger: DeepMerger, source: MappingType, target: MappingType
-) -> MappingType:
+def merge_dict(merger: DeepMerger, source: MappingType, target: MappingType) -> MappingType:
     """Merge two mappings recursively.
 
     Args:

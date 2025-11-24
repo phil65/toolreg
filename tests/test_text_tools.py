@@ -43,9 +43,7 @@ def test_format_signature():
     def test_function(a, b, c: int = 1, *args, **kwargs):
         pass
 
-    assert (
-        texttools.format_signature(test_function) == "(a, b, c: int = 1, *args, **kwargs)"
-    )
+    assert texttools.format_signature(test_function) == "(a, b, c: int = 1, *args, **kwargs)"
     assert (
         texttools.format_signature(test_function, eval_str=False)
         == "(a, b, c: 'int' = 1, *args, **kwargs)"
