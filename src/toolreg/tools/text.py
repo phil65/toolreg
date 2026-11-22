@@ -148,11 +148,13 @@ def snake_case(text: str) -> str:
 )
 @functools.cache
 def format_code(code: str) -> str:
-    """Format code to given line length using `black`.
+    """Format code using `ruff format`.
+
+    Uses the ruff configuration of the current working directory.
+    Returns the code unchanged if it cannot be formatted.
 
     Args:
         code: The code to format
-        line_length: Line length limit for formatted code
     """
     from ruff.__main__ import find_ruff_bin
 
