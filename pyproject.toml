@@ -52,6 +52,7 @@ dependencies = [
   "python-dotenv>=1.0.0",
   "pyyaml>=6.0",
   "ruff>=0.14.0",
+  "schemez",
   "tomli-w>=1.0.0",
   "universal-pathlib>=0.3.0",
 ]
@@ -97,6 +98,10 @@ exclude_lines = [
   "except ImportError",
   'if __name__ == "__main__":',
 ]
+
+[tool.deptry.per_rule_ignores]
+# schemez is kept as a dependency on purpose (template default).
+DEP002 = ["schemez"]
 
 [tool.mknodes]
 allowed-commit-types = [
