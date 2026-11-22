@@ -57,7 +57,9 @@ theme:
 plugins:
   - search
   - autorefs
-  - mknodes
+  - mknodes:
+      # README contains Jinja examples; don't render pages as templates.
+      render_by_default: false
   - mkdocstrings:
       default_handler: python
       handlers:
