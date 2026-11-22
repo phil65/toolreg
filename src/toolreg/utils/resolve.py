@@ -42,8 +42,9 @@ def resolve(
     if tests.is_python_builtin(used):
         import builtins
 
-        return getattr(builtins, used)
-    found = importlib.import_module(used)
+        found: Any = getattr(builtins, used)
+    else:
+        found = importlib.import_module(used)
     for n in names:
         used += "." + n
         try:
