@@ -3,7 +3,7 @@
 [project]
 name = "toolreg"
 version = "1.0.2"
-description = "A tool register."
+description = "Registry for Jinja2 filters, tests and functions with metadata from signatures and docstrings."
 readme = "README.md"
 requires-python = ">=3.13"
 license = "MIT"
@@ -11,7 +11,16 @@ license-files = ["LICENSE"]
 authors = [
   { name = "Philipp Temminghoff", email = "philipptemminghoff@googlemail.com" },
 ]
-keywords = []
+keywords = [
+  "docstrings",
+  "filters",
+  "introspection",
+  "jinja",
+  "jinja2",
+  "registry",
+  "templates",
+  "tools",
+]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Framework :: Pydantic",
@@ -23,6 +32,8 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
   "Topic :: Software Development",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Text Processing :: Markup",
   "Topic :: Utilities",
   "Typing :: Typed",
 ]
@@ -48,6 +59,7 @@ dependencies = [
 [project.urls]
 "Code coverage" = "https://app.codecov.io/gh/phil65/toolreg"
 Documentation = "https://phil65.github.io/toolreg/"
+Homepage = "https://phil65.github.io/toolreg/"
 Issues = "https://github.com/phil65/toolreg/issues"
 Source = "https://github.com/phil65/toolreg"
 

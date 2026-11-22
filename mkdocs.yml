@@ -1,5 +1,5 @@
 site_name: "ToolReg"
-site_description: "A tool register."
+site_description: "Registry for Jinja2 filters, tests and functions with metadata from signatures and docstrings."
 repo_url: "https://github.com/phil65/toolreg/"
 site_url: https://phil65.github.io/toolreg/
 site_author: "Philipp Temminghoff"

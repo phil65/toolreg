@@ -1,6 +1,6 @@
 """ToolReg: main package.
 
-A tool register.
+Registry for Jinja2 filters, tests and functions with metadata from signatures and docstrings.
 """
 
 from __future__ import annotations
