@@ -40,9 +40,9 @@ def serialize(data: Any, fmt: SerializeFormatStr, **kwargs: Any) -> str:
     """
     match fmt:
         case "yaml":
-            import yamling
+            import configz
 
-            return yamling.dump_yaml(data, **kwargs)
+            return configz.dump_yaml(data, **kwargs)
         case "json":
             return json.dumps(data, indent=4, **kwargs)
         case "ini":
@@ -96,9 +96,9 @@ def deserialize(data: str, fmt: SerializeFormatStr, **kwargs: Any) -> Any:
     """
     match fmt:
         case "yaml":
-            import yamling
+            import configz
 
-            return yamling.load_yaml(data, **kwargs)
+            return configz.load_yaml(data, **kwargs)
         case "json":
             return json.loads(data, **kwargs)
         case "ini":
