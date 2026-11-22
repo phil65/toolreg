@@ -115,8 +115,8 @@ from toolreg.registry.loaders import ToolLoader
 loader = ToolLoader()
 
 # Load from various sources
-loader.load("my_tools.toml")                  # TOML file
-loader.load("my_package.tools")               # Python module
+loader.load("my_tools.toml")  # TOML file
+loader.load("my_package.tools")  # Python module
 loader.load("third_party_plugin.ToolPlugin")  # Plugin
 
 # Or load multiple at once
@@ -198,6 +198,7 @@ I'll show how to integrate decorators with the loading system. Here's a comprehe
 ```python
 # toolreg/registry/decorators.py
 """Decorators for tool registration and loading."""
+
 from __future__ import annotations
 
 import functools
@@ -258,12 +259,16 @@ class ToolDecorator:
             return func
 
         # Deferred registration - store metadata for later
-        setattr(func, "_tool_registration", {
-            "typ": self.typ,
-            "name": self.name,
-            "group": self.group,
-            **self.metadata,
-        })
+        setattr(
+            func,
+            "_tool_registration",
+            {
+                "typ": self.typ,
+                "name": self.name,
+                "group": self.group,
+                **self.metadata,
+            },
+        )
         return func
 
     def _register_tool(self, func: Callable[..., Any]) -> None:
@@ -285,9 +290,7 @@ class ToolDecorator:
             )
             self._registry.register(func, metadata)
         except Exception as exc:
-            raise LoaderError(
-                f"Failed to register tool {func.__name__}"
-            ) from exc
+            raise LoaderError(f"Failed to register tool {func.__name__}") from exc
 
 
 # Create instances for different registration styles
@@ -318,9 +321,9 @@ class ModuleLoader(BaseLoader):
             members = inspect.getmembers(module)
 
         for name, obj in members:
-            if not name.startswith('_') and hasattr(obj, '_tool_registration'):
+            if not name.startswith("_") and hasattr(obj, "_tool_registration"):
                 try:
-                    reg_data = getattr(obj, '_tool_registration')
+                    reg_data = getattr(obj, "_tool_registration")
                     ToolDecorator(**reg_data)(obj)
                 except Exception:
                     self.logger.exception(
@@ -350,7 +353,7 @@ class ModuleLoader(BaseLoader):
             self._load_decorated_members(module, members)
 
             # Handle explicit registrations (if module has register_tools())
-            if hasattr(module, 'register_tools'):
+            if hasattr(module, "register_tools"):
                 module.register_tools()
 
             self._mark_loaded(source)
@@ -366,6 +369,7 @@ Now you can use the decorators in several ways:
 # my_tools.py
 from toolreg.registry.decorators import tool_filter
 
+
 @tool_filter()
 def uppercase(value: str) -> str:
     """Convert string to uppercase."""
@@ -376,6 +380,7 @@ def uppercase(value: str) -> str:
 # deferred_tools.py
 from toolreg.registry.decorators import tool_filter
 
+
 @tool_filter(deferred=True, group="text")
 def lowercase(value: str) -> str:
     """Convert string to lowercase."""
@@ -385,6 +390,7 @@ def lowercase(value: str) -> str:
 # Example 3: With metadata
 # advanced_tools.py
 from toolreg.registry.decorators import tool_filter
+
 
 @tool_filter(
     name="split_words",
@@ -425,6 +431,7 @@ You could also add a context manager for batched registrations:
 from contextlib import contextmanager
 from typing import Iterator
 
+
 class RegistrationContext:
     """Context manager for batched tool registration."""
 
@@ -450,6 +457,7 @@ class RegistrationContext:
 # Global registration context
 registration = RegistrationContext()
 
+
 # Update ToolDecorator to use the context
 class ToolDecorator:
     def __init__(
@@ -458,11 +466,7 @@ class ToolDecorator:
         deferred: bool | None = None,
         **kwargs: Any,
     ) -> None:
-        self.deferred = (
-            registration.is_deferred
-            if deferred is None
-            else deferred
-        )
+        self.deferred = registration.is_deferred if deferred is None else deferred
         # ... rest of initialization ...
 ```
 
@@ -473,11 +477,13 @@ from toolreg.registry.decorators import registration, tool_filter
 
 # All decorators within this block will be deferred
 with registration.defer_registration():
+
     @tool_filter()
     def func1(): ...
 
     @tool_filter()
     def func2(): ...
+
 
 # Normal immediate registration
 @tool_filter()

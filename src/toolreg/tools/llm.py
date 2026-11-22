@@ -33,9 +33,9 @@ class LazyLiteLLM:
 
         self._lazy_module = importlib.import_module("litellm")
 
-        self._lazy_module.suppress_debug_info = True  # type: ignore[attr-defined]
-        self._lazy_module.set_verbose = False  # type: ignore[attr-defined]
-        self._lazy_module.drop_params = True  # type: ignore[attr-defined]
+        self._lazy_module.suppress_debug_info = True  # ty: ignore[missing-attribute]
+        self._lazy_module.set_verbose = False  # ty: ignore[missing-attribute]
+        self._lazy_module.drop_params = True  # ty: ignore[missing-attribute]
         self._lazy_module._logging._disable_debugging()
 
 
@@ -81,7 +81,7 @@ def generate_openai_schema(func: Callable[..., Any]) -> dict[str, Any]:
         if param.default == inspect.Parameter.empty:
             required.append(name)
     return {
-        "name": func.__name__,
+        "name": func.__name__,  # ty: ignore[missing-attribute]
         "description": description,
         "parameters": {
             "type": "object",

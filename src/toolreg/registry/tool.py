@@ -96,7 +96,7 @@ class Tool(BaseModel):
         final_examples = examples if examples is not None else extracted_examples
         # Build metadata dict with explicit precedence
         metadata = {
-            "name": name if name is not None else func.__name__,
+            "name": name if name is not None else func.__name__,  # ty: ignore[missing-attribute]
             "typ": typ,
             "import_path": extracted["fn"],
             "description": (

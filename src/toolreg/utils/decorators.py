@@ -27,8 +27,8 @@ def cache_with_transforms[**P, R](
     Returns:
         A decorator function that caches results based on transformed arguments
     """
-    arg_transformers = arg_transformers or {}
-    kwarg_transformers = kwarg_transformers or {}
+    arg_tfs = arg_transformers or {}
+    kwarg_tfs = kwarg_transformers or {}
 
     def decorator(func: Callable[P, R]) -> Callable[P, R]:
         cache: dict[tuple[Any, ...], R] = {}
@@ -36,14 +36,11 @@ def cache_with_transforms[**P, R](
         @wraps(func)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
             # Transform positional arguments
-            transformed_args = tuple(
-                arg_transformers.get(i, lambda x: x)(arg) for i, arg in enumerate(args)
-            )
+            transformed_args = tuple(arg_tfs.get(i, lambda x: x)(arg) for i, arg in enumerate(args))
 
             # Transform keyword arguments
             transformed_kwargs = {
-                key: kwarg_transformers.get(key, lambda x: x)(value)
-                for key, value in sorted(kwargs.items())
+                key: kwarg_tfs.get(key, lambda x: x)(value) for key, value in sorted(kwargs.items())
             }
 
             # Create cache key from transformed arguments

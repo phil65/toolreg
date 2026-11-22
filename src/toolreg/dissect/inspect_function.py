@@ -107,9 +107,9 @@ def generate_function_docs(
         2
     """
     result = {
-        func.__name__: inspect_function(func)
+        func.__name__: inspect_function(func)  # ty: ignore[missing-attribute]
         for func in functions
-        if not func.__name__.startswith("_")
+        if not func.__name__.startswith("_")  # ty: ignore[missing-attribute]
     }
 
     if output_path:

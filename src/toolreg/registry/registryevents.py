@@ -197,7 +197,7 @@ class MetricsRegistryEvents(BaseRegistryEvents):
         self.execution_times: dict[str, list[float]] = {}
 
     def on_register(self, func: Callable[..., Any], metadata: dict[str, Any]) -> None:
-        name = func.__name__
+        name = func.__name__  # ty: ignore[missing-attribute]
         self.registration_count[name] = self.registration_count.get(name, 0) + 1
         logger.info("Registered function: %s with metadata: %s", name, metadata)
 
@@ -246,7 +246,7 @@ class LoggingRegistryEvents(BaseRegistryEvents):
             f.write(f"{datetime.now()}: {message}\n")
 
     def on_register(self, func: Callable[..., Any], metadata: dict[str, Any]) -> None:
-        self._log(f"Registered {func.__name__} with metadata: {metadata}")
+        self._log(f"Registered {func.__name__} with metadata: {metadata}")  # ty: ignore[missing-attribute]
 
     def pre_execute(self, context: ExecutionContext) -> None:
         self._log(
@@ -327,9 +327,9 @@ def wrap_function[T](func: Callable[..., T], events: BaseRegistryEvents) -> Call
             Exception: Any exception from the wrapped function
         """
         context = ExecutionContext(
-            function_name=func.__name__,
+            function_name=func.__name__,  # ty: ignore[missing-attribute]
             args=args,
-            kwargs=kwargs,
+            kw_args=kwargs,
             start_time=datetime.now(),
             result=None,
             error=None,
@@ -342,9 +342,9 @@ def wrap_function[T](func: Callable[..., T], events: BaseRegistryEvents) -> Call
             # Execute
             result = func(*args, **kwargs)
             context = ExecutionContext(
-                function_name=func.__name__,
+                function_name=func.__name__,  # ty: ignore[missing-attribute]
                 args=args,
-                kwargs=kwargs,
+                kw_args=kwargs,
                 start_time=context.start_time,
                 result=result,
                 error=None,
@@ -359,9 +359,9 @@ def wrap_function[T](func: Callable[..., T], events: BaseRegistryEvents) -> Call
         except Exception as e:
             # Handle error
             context = ExecutionContext(
-                function_name=func.__name__,
+                function_name=func.__name__,  # ty: ignore[missing-attribute]
                 args=args,
-                kwargs=kwargs,
+                kw_args=kwargs,
                 start_time=context.start_time,
                 error=e,
                 result=None,
@@ -371,7 +371,7 @@ def wrap_function[T](func: Callable[..., T], events: BaseRegistryEvents) -> Call
             duration = (end_time - context.start_time).total_seconds()
 
             error_ctx = {
-                "function": func.__name__,
+                "function": func.__name__,  # ty: ignore[missing-attribute]
                 "args": args,
                 "kwargs": kwargs,
             }

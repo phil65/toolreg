@@ -42,7 +42,7 @@ class ToolLoader:
         for loader in self._active_loaders.values():
             if loader.can_load(source):
                 try:
-                    loader.load(source, recursive=recursive)  # type: ignore
+                    loader.load(source, recursive=recursive)
                 except Exception as exc:
                     logger.exception("Loader %s failed for %s", loader.name, source)
                     msg = f"Failed to load {source} with {loader.name}"

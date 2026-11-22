@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import builtins
-import datetime
+import datetime as dt
 import inspect
 import math
 import os
@@ -93,7 +93,7 @@ def is_subclass(obj: type, typ: str | type) -> bool:
 
 def _is_datetime(value: Any) -> bool:
     """Return whether a value is a datetime."""
-    return isinstance(value, datetime.datetime)
+    return isinstance(value, dt.datetime)
 
 
 def _is_string_like(value: Any) -> bool:

@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from toolreg import Example
+    from toolreg.registry.registry import ToolRegistry
 
 
 logger = logging.getLogger(__name__)
@@ -30,7 +31,7 @@ class ToolRegistrar:
         self._registry = registry.ToolRegistry()
 
     @property
-    def registry(self) -> registry.ToolRegistry:
+    def registry(self) -> ToolRegistry:
         """Get the registry instance."""
         return self._registry
 
@@ -77,15 +78,15 @@ class ToolRegistrar:
                 description=description,
             )
         except Exception as exc:
-            err_msg = f"Failed to create metadata for {func.__name__}"
+            err_msg = f"Failed to create metadata for {func.__name__}"  # ty: ignore[missing-attribute]
             logger.exception(err_msg)
             raise ValueError(err_msg) from exc
 
         try:
             self._registry.register(func, metadata)
-            logger.info("Registered %s as %s", func.__name__, typ)
+            logger.info("Registered %s as %s", func.__name__, typ)  # ty: ignore[missing-attribute]
         except Exception as exc:
-            err_msg = f"Failed to register {func.__name__}"
+            err_msg = f"Failed to register {func.__name__}"  # ty: ignore[missing-attribute]
             raise RuntimeError(err_msg) from exc
 
     def register_tool[T](

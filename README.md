@@ -9,7 +9,6 @@
 [![Implementation](https://img.shields.io/pypi/implementation/toolreg.svg)](https://pypi.org/project/toolreg/)
 [![Releases](https://img.shields.io/github/downloads/phil65/toolreg/total.svg)](https://github.com/phil65/toolreg/releases)
 [![Github Contributors](https://img.shields.io/github/contributors/phil65/toolreg)](https://github.com/phil65/toolreg/graphs/contributors)
-[![Github Discussions](https://img.shields.io/github/discussions/phil65/toolreg)](https://github.com/phil65/toolreg/discussions)
 [![Github Forks](https://img.shields.io/github/forks/phil65/toolreg)](https://github.com/phil65/toolreg/forks)
 [![Github Issues](https://img.shields.io/github/issues/phil65/toolreg)](https://github.com/phil65/toolreg/issues)
 [![Github Issues](https://img.shields.io/github/issues-pr/phil65/toolreg)](https://github.com/phil65/toolreg/pulls)

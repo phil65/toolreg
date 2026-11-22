@@ -31,7 +31,7 @@ def get_example_value(type_hint: Any) -> Any:
     Returns:
         An appropriate example value for the given type
     """
-    import datetime
+    import datetime as dt
     import decimal
     import enum
     import inspect
@@ -73,10 +73,10 @@ def get_example_value(type_hint: Any) -> Any:
             memoryview: memoryview(b"example"),
             object: object(),
             type: type("Example", (), {}),
-            datetime.date: datetime.date(2024, 1, 1),
-            datetime.time: datetime.time(12, 0),
-            datetime.datetime: datetime.datetime(2024, 1, 1, 12, 0),
-            datetime.timedelta: datetime.timedelta(days=1),
+            dt.date: dt.date(2024, 1, 1),
+            dt.time: dt.time(12, 0),
+            dt.datetime: dt.datetime(2024, 1, 1, 12, 0),
+            dt.timedelta: dt.timedelta(days=1),
             uuid.UUID: uuid.uuid4(),
             ipaddress.IPv4Address: ipaddress.IPv4Address("192.0.2.1"),
             ipaddress.IPv6Address: ipaddress.IPv6Address("2001:db8::1"),

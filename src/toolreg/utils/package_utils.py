@@ -30,7 +30,7 @@ def get_package_name(module_path: str) -> str | None:
             return None
 
         # Take first part of the path
-        return module_path.split(".")[0]
+        return module_path.split(".", maxsplit=1)[0]
 
     except Exception:  # noqa: BLE001
         logger.debug("Failed to get package name for %s", module_path)

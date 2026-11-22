@@ -25,6 +25,7 @@ from typing import Literal
 from upathtools import UPath
 import httpx
 
+
 async def download(
     url: str,
     destination: str,
@@ -75,7 +76,7 @@ async def download(
         headers=request_headers,
         verify=verify_ssl,
         follow_redirects=allow_redirects,
-        timeout=timeout
+        timeout=timeout,
     ) as client:
         # Stream download
         async with client.stream("GET", url) as response:
@@ -106,10 +107,7 @@ async def download(
 ### Simple Download
 ```python
 # Download a file with default settings
-path = await download(
-    url="https://example.com/file.pdf",
-    destination="downloads/file.pdf"
-)
+path = await download(url="https://example.com/file.pdf", destination="downloads/file.pdf")
 print(f"Downloaded to: {path}")
 ```
 
@@ -120,7 +118,7 @@ path = await download(
     url="https://api.example.com/files/123",
     destination="downloads/protected.pdf",
     auth_type="bearer",
-    auth_token="my-secret-token"
+    auth_token="my-secret-token",
 )
 ```
 
@@ -130,20 +128,14 @@ path = await download(
 path = await download(
     url="https://example.com/file.zip",
     destination="downloads/file.zip",
-    headers={
-        "User-Agent": "MyApp/1.0",
-        "Accept": "application/octet-stream"
-    }
+    headers={"User-Agent": "MyApp/1.0", "Accept": "application/octet-stream"},
 )
 ```
 
 ### Error Handling
 ```python
 try:
-    path = await download(
-        url="https://example.com/not-found",
-        destination="downloads/missing.txt"
-    )
+    path = await download(url="https://example.com/not-found", destination="downloads/missing.txt")
 except httpx.HTTPStatusError as e:
     print(f"Download failed with status {e.response.status_code}")
 except httpx.RequestError as e:
@@ -158,7 +150,7 @@ path = await download(
     destination="downloads/protected.pdf",
     auth_type="basic",
     username="user",
-    password="pass"
+    password="pass",
 )
 ```
 

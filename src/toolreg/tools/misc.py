@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import logging
 import pathlib
 from typing import TYPE_CHECKING, Any
@@ -192,13 +192,13 @@ def has_internet() -> bool:
     icon="mdi:time",
     examples=[Example(title="basic", template="""{{ now() }}""")],
 )
-def now(tz: datetime.tzinfo | None = None) -> datetime.datetime:
+def now(tz: dt.tzinfo | None = None) -> dt.datetime:
     """Get current Datetime.
 
     Args:
         tz: timezone for retuned datetime
     """
-    return datetime.datetime.now(tz)
+    return dt.datetime.now(tz)
 
 
 @register_tool(
@@ -207,9 +207,9 @@ def now(tz: datetime.tzinfo | None = None) -> datetime.datetime:
     icon="mdi:time",
     examples=[Example(title="basic", template="""{{ utcnow() }}""")],
 )
-def utcnow() -> datetime.datetime:
+def utcnow() -> dt.datetime:
     """Get UTC datetime."""
-    return datetime.datetime.now(datetime.UTC)
+    return dt.datetime.now(dt.UTC)
 
 
 @register_tool(

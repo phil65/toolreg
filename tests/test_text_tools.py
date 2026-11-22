@@ -34,7 +34,9 @@ def test_rstrip():
     assert texttools.rstrip("   Hello, World!  ") == "   Hello, World!"  # noqa: B005
 
 
-def test_format_code():
+def test_format_code(tmp_path, monkeypatch):
+    # Run outside the project so ruff uses its defaults, not this repo's line length.
+    monkeypatch.chdir(tmp_path)
     assert texttools.format_code(GIVEN) == EXPECTED
     assert texttools.format_code("invalid code!") == "invalid code!"
 

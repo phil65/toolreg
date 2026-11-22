@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import functools
 import inspect
 import itertools
@@ -200,7 +200,7 @@ def extract_body(src: str) -> str:
     """
     lines = src.split("\n")
     src_lines = itertools.dropwhile(lambda x: x.strip().startswith("@"), lines)
-    line = next(src_lines).strip()  # type: ignore
+    line = next(src_lines).strip()
     if not line.startswith(("def ", "class ")):
         return line.rsplit(":")[-1].strip()
     if not line.endswith(":"):
@@ -378,7 +378,7 @@ def format_timestamp(timestamp: float, fmt: str) -> str:
     Returns:
         Formatted date string
     """
-    return datetime.datetime.fromtimestamp(timestamp).strftime(fmt)
+    return dt.datetime.fromtimestamp(timestamp).strftime(fmt)
 
 
 if __name__ == "__main__":
