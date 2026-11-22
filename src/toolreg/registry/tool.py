@@ -19,23 +19,23 @@ class Tool(BaseModel):
     """Metadata for a jinja item."""
 
     name: slugfield.Slug
-    """ame of the jinja item"""
+    """Name of the jinja item"""
     typ: registry.ItemType
-    """type of the item (filter, test, or function)"""
+    """Type of the item (filter, test, or function)"""
     import_path: str
-    """mport path in the format "package.module.function"""
+    """Import path in the format `package.module.function`."""
     description: str | None = None
-    """ptional description of what the item does"""
+    """Optional description of what the item does"""
     group: str = "general"
-    """roup/category for organizing items"""
+    """Group/category for organizing items"""
     examples: example.ExampleList = Field(default_factory=list)
     """List of usage examples"""
     required_packages: list[str] = Field(default_factory=list)
-    """ython packages required for this item"""
+    """Python packages required for this item"""
     aliases: list[str] = Field(default_factory=list)
-    """lternative names that can be used to access this item"""
+    """Alternative names that can be used to access this item"""
     icon: str | None = None
-    """ptional icon identifier"""
+    """Optional icon identifier"""
 
     @classmethod
     def from_function(
