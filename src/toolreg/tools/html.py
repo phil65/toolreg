@@ -581,9 +581,9 @@ def url_to_b64(image_url: str) -> str | None:
     Returns:
         The base64-encoded string of the image.
     """
-    import httpx
+    import httpx2
 
-    with httpx.Client(follow_redirects=True) as client:
+    with httpx2.Client(follow_redirects=True) as client:
         response = client.get(image_url)
         response.raise_for_status()
         image_data = response.content

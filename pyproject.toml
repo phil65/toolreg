@@ -41,7 +41,7 @@ dependencies = [
   # Only add below (Copier)
   "configz>=3.0.1",
   "griffelib>=2.0.0",
-  "httpx>=0.28.0",
+  "httpx2>=2.16",
   "jinja2>=3.1.0",
   "jinjarope>=1.0.0",
   "markupsafe>=3.0.0",

@@ -1,6 +1,6 @@
 # Httpx Download Tool
 
-Downloads files from URLs using httpx. Supports:
+Downloads files from URLs using httpx2. Supports:
 - Multiple authentication methods
 - Progress tracking
 - Automatic retries
@@ -23,7 +23,7 @@ metadata:
 ```python
 from typing import Literal
 from upathtools import UPath
-import httpx
+import httpx2
 
 
 async def download(
@@ -57,13 +57,13 @@ async def download(
         Path where the file was saved
 
     Raises:
-        httpx.RequestError: If download fails
+        httpx2.RequestError: If download fails
         OSError: If saving fails
     """
     # Prepare auth
     auth = None
     if auth_type == "basic" and username and password:
-        auth = httpx.BasicAuth(username=username, password=password)
+        auth = httpx2.BasicAuth(username=username, password=password)
 
     # Prepare headers
     request_headers = headers or {}
@@ -71,7 +71,7 @@ async def download(
         request_headers["Authorization"] = f"Bearer {auth_token}"
 
     # Create client
-    async with httpx.AsyncClient(
+    async with httpx2.AsyncClient(
         auth=auth,
         headers=request_headers,
         verify=verify_ssl,
@@ -136,9 +136,9 @@ path = await download(
 ```python
 try:
     path = await download(url="https://example.com/not-found", destination="downloads/missing.txt")
-except httpx.HTTPStatusError as e:
+except httpx2.HTTPStatusError as e:
     print(f"Download failed with status {e.response.status_code}")
-except httpx.RequestError as e:
+except httpx2.RequestError as e:
     print(f"Network error: {e}")
 ```
 

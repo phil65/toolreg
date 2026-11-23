@@ -68,7 +68,7 @@ uvx duty lint | test | build | serve   # wrappers from duties.py (duty is not a 
 - `from __future__ import annotations` everywhere; Google-style docstrings; line length 100.
 - Every tool takes `@register_tool(typ=..., group=..., icon="mdi:...", examples=[Example(...)])`.
   `Example.template` is a Jinja snippet using the tool.
-- Optional/heavy imports (e.g. `pyconify`, `natsort`, `configz`, `litellm`, `httpx`) are done
+- Optional/heavy imports (e.g. `pyconify`, `natsort`, `configz`, `litellm`, `httpx2`) are done
   inside the function body, not at module level.
 - ty: use targeted `# ty: ignore[rule]`, not mypy-style `# type: ignore[...]`. `Callable`
   has no `__name__` for ty, hence the `missing-attribute` ignores.
